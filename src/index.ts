@@ -3,6 +3,11 @@ import { sonarFactory } from "./sonar";
 
 console.log("start");
 
-const sonar = sonarFactory();
+sonarFactory().then((sonar) => {
+  while (true) {
+    const dist = sonar.getDistance();
+    console.log(dist);
+  }
+});
 
 console.log("end");
