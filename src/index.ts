@@ -3,9 +3,14 @@ import { sonarFactory } from "./sonar";
 
 console.log("start");
 
-sonarFactory().then((sonar) => {
+sonarFactory().then(async (sonar) => {
+  if(!sonar) {
+    console.log("soner borked");
+  }
+
   while (true) {
-    const dist = sonar.getDistance();
+    console.log("sample");
+    const dist = await sonar.getDistance();
     console.log(dist);
   }
 });
