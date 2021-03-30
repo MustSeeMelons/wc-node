@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Node version of the Rust version.",
   "scripts": {
-    "start": "ts-node src/index.ts"
+    "start": "ts-node -T src/index.ts"
   },
   "dependencies": {
     "rpi-gpio": "2.1.7",
