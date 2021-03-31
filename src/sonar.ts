@@ -10,52 +10,47 @@ export interface ISonar {
 }
 
 export const sonarFactory = async (): Promise<ISonar | undefined> => {
-  try {
-    await gpio.setup(PIN_TRIG, gpio.DIR_OUT);
-    await gpio.setup(PIN_ECHO, gpio.DIR_IN);
+  await gpio.setup(PIN_TRIG, gpio.DIR_OUT);
+  await gpio.setup(PIN_ECHO, gpio.DIR_IN);
 
-    const tooooLong = (date: Date) => {
-      const diff = new Date().getMilliseconds() - date.getMilliseconds();
-      console.log("time diff: " + diff);
-      return diff > 30
-    }
-
-    return {
-      getDistance: async () => {
-        await gpio.write(PIN_TRIG, false);
-        console.log("low");
-        sleep.usleep(2);
-        await gpio.write(PIN_TRIG, true);
-        console.log("high");
-        sleep.usleep(10);
-        await gpio.write(PIN_TRIG, false);
-        console.log("low");
-
-        let start: Date = new Date();
-        while ((await gpio.read(PIN_ECHO)) === false) {
-          start = new Date();
-          if(tooooLong(start)) {
-            console.log("never low");
-            break;
-          }
-        }
-
-        let end: Date = new Date();
-        while ((await gpio.read(PIN_ECHO)) === true) {
-          end = new Date();
-          if(tooooLong(end)) {
-            console.log("never high");
-            break;
-          }
-        }
-
-        const duration = end.getMilliseconds() - start.getMilliseconds();
-
-        return (SONIC_SPEED * duration * 1000) / 2;
-      },
-    };
-  } catch (e) {
-    console.error(e);
-    return undefined;
+  const tooooLong = (then: Date) => {
+    const now = new Date();
+    const diff = now.getTime() - then.getTime();
+    return diff > 60
   }
+
+  return {
+    getDistance: async () => {
+      await gpio.write(PIN_TRIG, false);
+      sleep.usleep(2); // halts all JS!
+      await gpio.write(PIN_TRIG, true);
+      sleep.usleep(10);
+      await gpio.write(PIN_TRIG, false);
+
+      let start = process.hrtime();
+      let init: Date = new Date();
+
+      while ((await gpio.read(PIN_ECHO)) === false) {
+        start = process.hrtime();
+        if(tooooLong(init)) {
+          console.log("always low");
+          return -1;
+        }
+      }
+
+      let duration = process.hrtime(start);
+      let init: Date = new Date();
+      while ((await gpio.read(PIN_ECHO)) === true) {
+        duration = process.hrtime(start);
+        if(tooooLong(init)) {
+          console.log("always high");
+          return -1;
+        }
+      }
+
+      sleep.msleep(60);
+
+      return (SONIC_SPEED * duration[1] / 1000) / 2;
+    },
+  };
 };

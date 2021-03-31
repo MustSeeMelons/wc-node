@@ -1,18 +1,17 @@
 import {} from "audio-play";
-import { sonarFactory } from "./sonar";
+import { sonarStateFactory } from "./sonar-state";
 
-console.log("start");
+const sleep = require("sleep");
 
-sonarFactory().then(async (sonar) => {
-  if(!sonar) {
-    console.log("soner borked");
+sonarStateFactory().then(async (sonarState) => {
+  if(!sonarState) {
+    console.log("soner no go brr");
   }
 
   while (true) {
-    console.log("sample");
-    const dist = await sonar.getDistance();
-    console.log(dist);
+    await sonarState.stateTick();
+    console.log(sonarState.getSonarState());
+    // sleep.msleep(50);
   }
 });
 
-console.log("end");
