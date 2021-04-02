@@ -1,56 +1,43 @@
-import { promise as gpio } from "rpi-gpio";
-const sleep = require("sleep");
+import { Gpio } from "pigpio";
 
-const PIN_TRIG = 7;
-const PIN_ECHO = 18;
-const SONIC_SPEED = 0.034; // cm/micro second
+const PIN_TRIG = 4;
+const PIN_ECHO = 24;
+const MICROSECDONDS_PER_CM = 1e6 / 34321;
 
 export interface ISonar {
   getDistance: () => Promise<number>;
 }
 
 export const sonarFactory = async (): Promise<ISonar | undefined> => {
-  await gpio.setup(PIN_TRIG, gpio.DIR_OUT);
-  await gpio.setup(PIN_ECHO, gpio.DIR_IN);
+  const trigger = new Gpio(PIN_TRIG, { mode: Gpio.OUTPUT });
+  const echo = new Gpio(PIN_ECHO, { mode: Gpio.INPUT, alert: true });
 
-  const tooooLong = (then: Date) => {
-    const now = new Date();
-    const diff = now.getTime() - then.getTime();
-    return diff > 60
-  }
+  let value: number | undefined;
+  let startTick = 0;
+
+  echo.on("alert", (level, tick) => {
+    if (level === 1) {
+      startTick = tick;
+    } else {
+      const endTick = tick;
+      const diff = (endTick >> 0) - (startTick >> 0); // Unsigned 32 bit arithmetic
+      value = diff / 2 / MICROSECDONDS_PER_CM;
+    }
+  });
 
   return {
-    getDistance: async () => {
-      await gpio.write(PIN_TRIG, false);
-      sleep.usleep(2); // halts all JS!
-      await gpio.write(PIN_TRIG, true);
-      sleep.usleep(10);
-      await gpio.write(PIN_TRIG, false);
+    getDistance: async (): Promise<number> => {
+      return new Promise((resolve, reject) => {
+        value = undefined;
+        trigger.trigger(10, 1);
 
-      let start = process.hrtime();
-      let init: Date = new Date();
-
-      while ((await gpio.read(PIN_ECHO)) === false) {
-        start = process.hrtime();
-        if(tooooLong(init)) {
-          console.log("always low");
-          return -1;
-        }
-      }
-
-      let duration = process.hrtime(start);
-      let init: Date = new Date();
-      while ((await gpio.read(PIN_ECHO)) === true) {
-        duration = process.hrtime(start);
-        if(tooooLong(init)) {
-          console.log("always high");
-          return -1;
-        }
-      }
-
-      sleep.msleep(60);
-
-      return (SONIC_SPEED * duration[1] / 1000) / 2;
+        const handle = setInterval(() => {
+          if (value) {
+            clearInterval(handle);
+            resolve(value);
+          }
+        }, 10);
+      });
     },
   };
 };
