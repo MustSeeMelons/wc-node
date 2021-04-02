@@ -1,5 +1,5 @@
-import { promise as gpio } from "rpi-gpio";
-import { ISonar, sonarFactory } from "./sonar";
+import { sonarFactory } from "./sonar";
+import { Gpio } from "pigpio";
 
 const PIN_LED = 16;
 const TRIGGER_DIST = 50;
@@ -20,15 +20,15 @@ export interface ISonarState {
 
 export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
   try {
-    await gpio.setup(PIN_LED, gpio.DIR_OUT);
+    const led = new Gpio(PIN_LED, { mode: Gpio.OUTPUT });
     const sonar = await sonarFactory();
-    await gpio.write(PIN_LED, false);
+    led.digitalWrite(0);
 
     let isLedOn = false;
     let sonarState = SonarState.OnTrigger;
 
     const toggleLed = () => {
-      gpio.write(PIN_LED, !isLedOn);
+      led.digitalWrite(isLedOn ? 1 : 0);
       isLedOn = !isLedOn;
     };
 
