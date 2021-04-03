@@ -1,4 +1,4 @@
-const loader = require('audio-loader')
+const loader = require("audio-loader");
 import play from "audio-play";
 
 interface IAudioManager {
