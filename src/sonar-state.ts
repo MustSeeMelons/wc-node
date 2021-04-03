@@ -97,6 +97,8 @@ export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
       }
     };
 
+    console.log("State initialized!");
+
     return {
       stateTick,
       getSonarState: () => {

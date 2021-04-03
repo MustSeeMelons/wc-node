@@ -1,4 +1,4 @@
-import loader from "audio-loader";
+const loader = require('audio-loader')
 import play from "audio-play";
 
 interface IAudioManager {
@@ -7,8 +7,8 @@ interface IAudioManager {
 }
 
 export const audioManagerFactory = async (): Promise<IAudioManager> => {
-  const aWelcome = await loader("./audio/welcome.mp3");
-  const aBye = await loader("./autio/bye.mp3");
+  const aWelcome = await loader("./audio/atlantis.mp3");
+  const aBye = await loader("./audio/nero.mp3");
 
   let playback: play.AudioPlayHandle;
 
