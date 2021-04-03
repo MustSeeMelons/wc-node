@@ -3,7 +3,7 @@ import { configureClock, CLOCK_PWM } from "pigpio";
 
 console.log("configuring clock");
 
-configureClock(1, CLOCK_PWM);
+configureClock(4, CLOCK_PWM);
 
 console.log("clock configured");
 
@@ -15,16 +15,22 @@ const pause = () => {
   });
 };
 
-sonarStateFactory().then(async (sonarState) => {
-  if (!sonarState) {
-    console.log("soner no go brr brr");
-  }
+console.log("creating sonar factory");
 
-  console.log("Starting state loop!");
+sonarStateFactory()
+  .then(async (sonarState) => {
+    if (!sonarState) {
+      console.log("soner no go brr brr");
+    }
 
-  while (true) {
-    console.log("looper");
-    await sonarState.stateTick();
-    await pause();
-  }
-});
+    console.log("Starting state loop!");
+
+    while (true) {
+      console.log("looper");
+      await sonarState.stateTick();
+      await pause();
+    }
+  })
+  .catch((e) => {
+    console.error(e);
+  });
