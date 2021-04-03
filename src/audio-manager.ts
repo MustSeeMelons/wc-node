@@ -1,23 +1,37 @@
 const loader = require("audio-loader");
-import play from "audio-play";
+const play = require("audio-play");
 
 interface IAudioManager {
   welcome: () => void;
   bye: () => void;
 }
 
-export const audioManagerFactory = async (): Promise<IAudioManager> => {
-  const aWelcome = await loader("./audio/atlantis.mp3");
-  const aBye = await loader("./audio/nero.mp3");
+export const audioManagerFactory = async (): Promise<IAudioManager | undefined> => {
+  try {
+    const background = await loader("./audio/nero.mp3");
 
-  let playback: play.AudioPlayHandle;
+    let playback: play.AudioPlayHandle;
 
-  return {
-    welcome: () => {
-      playback = play(aWelcome, {}, () => {});
-    },
-    bye: () => {
-      playback = play(aBye, {}, () => {});
-    },
-  };
+    const createPlayback = () => {
+      playback = play(background, {
+        autoplay: false,
+        volume: 1
+      }, () => {
+        createPlayback();
+      });
+    }
+
+    createPlayback();
+
+    return {
+      welcome: () => {
+        playback.play();
+      },
+      bye: () => {
+        playback.pause();
+      },
+    };
+  } catch(e) {
+    console.error(e);
+  }
 };

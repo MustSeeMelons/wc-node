@@ -25,15 +25,13 @@ export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
     const audio = await audioManagerFactory();
     const led = new Gpio(PIN_LED, { mode: Gpio.OUTPUT });
 
-    led.digitalWrite(0);
-
     let isLedOn = false;
+    led.digitalWrite(0);
     let sonarState = SonarState.OnTrigger;
 
     const toggleLed = () => {
       led.digitalWrite(isLedOn ? 1 : 0);
       isLedOn = !isLedOn;
-      console.log(`toggled to ${isLedOn}`);
     };
 
     const median = (arr: number[]) => {
@@ -69,6 +67,8 @@ export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
 
       const dist = filter(samples);
 
+      console.log(`dist: ${dist}`);
+
       switch (sonarState) {
         case SonarState.OnTrigger:
           if (dist < TRIGGER_DIST) {
@@ -96,8 +96,6 @@ export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
           break;
       }
     };
-
-    console.log("State initialized!");
 
     return {
       stateTick,
