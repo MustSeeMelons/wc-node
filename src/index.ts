@@ -1,25 +1,18 @@
 import { sonarStateFactory } from "./sonar-state";
 import { configureClock, CLOCK_PWM } from "pigpio";
 
-configureClock(2, CLOCK_PWM);
-
-const pause = () => {
-  return new Promise<void>((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, 10);
-  });
-};
+configureClock(1, CLOCK_PWM);
 
 sonarStateFactory()
   .then(async (sonarState) => {
     if (!sonarState) {
       console.log("soner no go brr brr");
+    } else {
+      console.log("ha ha, we go brr brr");
     }
 
     while (true) {
       await sonarState.stateTick();
-      // await pause();
     }
   })
   .catch((e) => {

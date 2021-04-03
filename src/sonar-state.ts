@@ -1,12 +1,16 @@
 import { sonarFactory } from "./sonar";
 import { audioPlayManagerFactory } from "./audio-manager";
-import { voiceManagerFactory } from "./voice-manager";
 import { Gpio } from "pigpio";
+const { exec } = require("child_process");
 
 const PIN_LED = 23;
 const TRIGGER_DIST = 50;
 const TRIGGER_END_DIST = TRIGGER_DIST * 2;
 const SAMPLE_COUNT = 4;
+
+const MIN_VOLUME = 30;
+const MAX_VOLUME = 85;
+const VOL_WAIT = 150;
 
 export enum SonarState {
   OnTrigger = "OnTrigger",
@@ -20,12 +24,41 @@ export interface ISonarState {
   getSonarState: () => SonarState;
 }
 
+const wait = async () => {
+  return new Promise<void>((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, VOL_WAIT);
+  });
+}
+
+const fadeIn = async () => {
+  for(let i = MIN_VOLUME; i <= MAX_VOLUME; i += 2) {
+    await new Promise<void>((resolve) => {
+      exec(`amixer set PCM ${i}%`, () => {
+        resolve();
+      });
+    });
+    await wait();
+  }
+}
+
+const fadeOut = async () => {
+  for(let i = MAX_VOLUME; i >= MIN_VOLUME; i -= 1) {
+    await new Promise((resolve) => {
+      exec(`amixer set PCM ${i}%`, () => {
+        resolve();
+      });
+    });
+    await wait();
+  }
+}
+
 export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
   try {
     const sonar = await sonarFactory();
     const audio = await audioPlayManagerFactory();
-    const voice = await voiceManagerFactory();
-
+    exec(`amixer set PCM ${MIN_VOLUME}%`);
     const led = new Gpio(PIN_LED, { mode: Gpio.OUTPUT });
 
     let isLedOn = false;
@@ -33,7 +66,7 @@ export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
     let sonarState = SonarState.OnTrigger;
 
     const toggleLed = () => {
-      led.digitalWrite(isLedOn ? 1 : 0);
+      led.digitalWrite(isLedOn ? 0 : 1);
       isLedOn = !isLedOn;
     };
 
@@ -70,15 +103,13 @@ export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
 
       const dist = filter(samples);
 
-      console.log(`dist: ${dist}`);
-
       switch (sonarState) {
         case SonarState.OnTrigger:
           if (dist < TRIGGER_DIST) {
             sonarState = SonarState.OnTriggerEnd;
             toggleLed();
-            voice.greet();
             audio.welcome();
+            await fadeIn();
           }
           break;
         case SonarState.OnTriggerEnd:
@@ -89,8 +120,9 @@ export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
         case SonarState.OffTrigger:
           if (dist < TRIGGER_DIST) {
             sonarState = SonarState.OffTriggerEnd;
+           
+            await fadeOut();
             toggleLed();
-            voice.farewell();
             audio.bye();
           }
           break;

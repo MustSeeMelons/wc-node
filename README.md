@@ -2,5 +2,10 @@
 
 - `npm i`
 - `sudo apt-get install pigpio`
-- `sudo apt-get install festival festvox-kallpc16k`
 - `sudo npm start`
+
+# Roadmap
+
+- `say` zero cannot handle this - gets killed
+- try `spawn` once more for volume transition, there are a few hitches still
+
