@@ -36,7 +36,7 @@ export const sonarFactory = async (): Promise<ISonar | undefined> => {
             clearInterval(handle);
             resolve(value);
           }
-        }, 10);
+        }, 1);
       });
     },
   };

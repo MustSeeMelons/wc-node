@@ -1,3 +1,5 @@
-# These are not GPIO numbered pins
+# How to
 
- - https://elinux.org/RPi_Low-level_peripherals
+- `npm i`
+- `sudo apt-get install pigpio`
+- `sudo npm start`
