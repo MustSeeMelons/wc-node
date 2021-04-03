@@ -1,7 +1,7 @@
 import { sonarFactory } from "./sonar";
 import { Gpio } from "pigpio";
 
-const PIN_LED = 16;
+const PIN_LED = 23;
 const TRIGGER_DIST = 50;
 const TRIGGER_END_DIST = TRIGGER_DIST * 2;
 const SAMPLE_COUNT = 4;
@@ -30,6 +30,7 @@ export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
     const toggleLed = () => {
       led.digitalWrite(isLedOn ? 1 : 0);
       isLedOn = !isLedOn;
+      console.log(`toggled to ${isLedOn}`);
     };
 
     const median = (arr: number[]) => {
