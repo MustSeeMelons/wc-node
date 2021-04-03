@@ -1,5 +1,6 @@
 import { sonarFactory } from "./sonar";
-import { audioManagerFactory } from "./audio-manager";
+import { audioPlayManagerFactory } from "./audio-manager";
+import { voiceManagerFactory } from "./voice-manager";
 import { Gpio } from "pigpio";
 
 const PIN_LED = 23;
@@ -22,7 +23,9 @@ export interface ISonarState {
 export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
   try {
     const sonar = await sonarFactory();
-    const audio = await audioManagerFactory();
+    const audio = await audioPlayManagerFactory();
+    const voice = await voiceManagerFactory();
+
     const led = new Gpio(PIN_LED, { mode: Gpio.OUTPUT });
 
     let isLedOn = false;
@@ -74,6 +77,7 @@ export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
           if (dist < TRIGGER_DIST) {
             sonarState = SonarState.OnTriggerEnd;
             toggleLed();
+            voice.greet();
             audio.welcome();
           }
           break;
@@ -86,6 +90,7 @@ export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
           if (dist < TRIGGER_DIST) {
             sonarState = SonarState.OffTriggerEnd;
             toggleLed();
+            voice.farewell();
             audio.bye();
           }
           break;

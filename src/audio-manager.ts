@@ -6,22 +6,21 @@ interface IAudioManager {
   bye: () => void;
 }
 
-export const audioManagerFactory = async (): Promise<IAudioManager | undefined> => {
+export const audioPlayManagerFactory = async (): Promise<
+  IAudioManager | undefined
+> => {
   try {
     const background = await loader("./audio/nero.mp3");
 
-    let playback: play.AudioPlayHandle;
-
-    const createPlayback = () => {
-      playback = play(background, {
+    let playback: play.AudioPlayHandle = play(
+      background,
+      {
         autoplay: false,
-        volume: 1
-      }, () => {
-        createPlayback();
-      });
-    }
-
-    createPlayback();
+        volume: 1,
+        loop: true,
+      },
+      () => {}
+    );
 
     return {
       welcome: () => {
@@ -31,7 +30,7 @@ export const audioManagerFactory = async (): Promise<IAudioManager | undefined> 
         playback.pause();
       },
     };
-  } catch(e) {
+  } catch (e) {
     console.error(e);
   }
 };
