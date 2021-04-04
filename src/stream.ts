@@ -9,7 +9,7 @@ export const streamFactory = () => {
 
   return {
     close: () => {
-      st.disconnect();
+      st.kill();
     },
   };
 };
