@@ -1,34 +1,41 @@
+import { wait } from "./utils";
+import { AudioPlayHandle } from "audio-play";
 const loader = require("audio-loader");
 const play = require("audio-play");
-const { exec, spawn } = require("child_process");
+const { spawn } = require("child_process");
+
+export const MIN_VOLUME = 30;
+const MAX_VOLUME = 85;
+const VOL_STEP = 5;
+const VOL_WAIT = 150;
 
 interface IAudioManager {
   welcome: () => void;
   bye: () => void;
 }
 
-const setVolume = (volume: number) => {
+export const setVolume = (volume: number) => {
   return new Promise<void>((resolve) => {
-    const vol = spawn("amixer", ["set", "PCM", `${i}%`]);
+    const vol = spawn("amixer", ["set", "PCM", `${volume}%`]);
     vol.on("close", () => {
       resolve();
     });
-  })
-}
+  });
+};
 
 export const fadeInAudio = async () => {
-  for(let i = MIN_VOLUME; i <= MAX_VOLUME; i += VOL_STEP) {
+  for (let i = MIN_VOLUME; i <= MAX_VOLUME; i += VOL_STEP) {
     await setVolume(i);
     await wait(VOL_WAIT);
   }
-}
+};
 
 export const fadeOutAudio = async () => {
-  for(let i = MAX_VOLUME; i >= MIN_VOLUME; i -= VOL_STEP) {
+  for (let i = MAX_VOLUME; i >= MIN_VOLUME; i -= VOL_STEP) {
     await setVolume(i);
     await wait(VOL_WAIT);
   }
-}
+};
 
 export const audioPlayManagerFactory = async (): Promise<
   IAudioManager | undefined
@@ -36,7 +43,7 @@ export const audioPlayManagerFactory = async (): Promise<
   try {
     const background = await loader("./audio/nero.mp3");
 
-    let playback: play.AudioPlayHandle = play(
+    let playback: AudioPlayHandle = play(
       background,
       {
         autoplay: false,

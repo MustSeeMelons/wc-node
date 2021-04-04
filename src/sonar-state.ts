@@ -1,18 +1,12 @@
 import { sonarFactory } from "./sonar";
-import { audioPlayManagerFactory } from "./audio-manager";
-import { fadeIn, fadeOut} from "./audio-manager";
-import { wait } from "./utils";
+import { audioPlayManagerFactory, MIN_VOLUME } from "./audio-manager";
+import { fadeInAudio, fadeOutAudio, setVolume } from "./audio-manager";
 import { Gpio } from "pigpio";
 
 const PIN_LED = 23;
 const TRIGGER_DIST = 50;
 const TRIGGER_END_DIST = TRIGGER_DIST * 2;
 const SAMPLE_COUNT = 4;
-
-const MIN_VOLUME = 30;
-const MAX_VOLUME = 85;
-const VOL_STEP = 5;
-const VOL_WAIT = 150;
 
 export enum SonarState {
   OnTrigger = "OnTrigger",
@@ -92,7 +86,7 @@ export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
         case SonarState.OffTrigger:
           if (dist < TRIGGER_DIST) {
             sonarState = SonarState.OffTriggerEnd;
-           
+
             await fadeOutAudio();
             toggleLed();
             audio.bye();
