@@ -20,6 +20,7 @@
   <body>
     <div class="row justify-content-center m-3">
       <div class="col-xs-10 col-sm-6">
+        <h2>Ateja FM</h2>
         <% if(success === "true") { %>
         <div class="alert alert-success" role="alert">Updated!</div>
         <% } else if(success === "false"){ %>
@@ -49,6 +50,7 @@
               type="file"
               name="file" 
               id="file"/>
+              <small id="fileHelp" class="form-text text-muted">The uploaded audio will be used as loop audio.</small>
           </div>
           <div class="form-group">
             <div class="form-check">
@@ -62,20 +64,26 @@
                 id="playStream"
               />
               <label class="form-check-label" for="exampleCheck1"
-                >Play stream, not file</label
+                >Stream audio</label
               >
+              <small id="fileHelp" class="form-text text-muted">If unchecked, selected audio file will be played.</small>
             </div>
           </div>
-          <!-- <div class="form-group">
-            <label for="filename">Filename</label>
-            <input
-              value="<%= filename %>"
-              type="text"
-              class="form-control"
-              id="filename"
-              placeholder="my-song.mp3"
-            />
-          </div> -->
+          <div class="form-group">
+            <label for="audioFiles">Selected Loop Audio</label>
+            <select class="form-control" id="audioFiles" name="audioFile">
+              <% for(var i=0; i < audioFiles.length; i++) { %>
+                <option 
+                  <% if(filename === audioFiles[i]) { %>
+                    selected
+                  <% } %>
+                  >
+                  <%= audioFiles[i] %>
+                </option>
+              <% } %>
+            </select>
+            <small id="fileHelp" class="form-text text-muted">No effect if uploading a file.</small>
+          </div>
           <button type="submit" class="btn btn-block btn-primary mt-2">
             Update
           </button>
