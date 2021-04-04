@@ -70,11 +70,8 @@ export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
 
     const stopAudio = async () => {
       await fadeOutAudio();
-      if (configManager.isStream()) {
-        stream && stream.close();
-      } else {
-        audio.stopAudio();
-      }
+      stream && stream.close();
+      audio.stopAudio();
       toggleLed();
     };
 

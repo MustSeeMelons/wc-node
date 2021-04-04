@@ -43,6 +43,6 @@ export const startServer = () => {
   });
 
   app.listen(PORT, () => {
-    console.log(`Server is up on: ${PORT}`);
+    console.log(`Server is up on: ${PORT}, wait for soner..`);
   });
 };
