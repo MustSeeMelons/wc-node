@@ -1,4 +1,5 @@
 import express, { Application } from "express";
+import fileUpload, { UploadedFile } from "express-fileupload";
 import path from "path";
 import { configManager } from "./config-manager";
 
@@ -10,13 +11,15 @@ export const startServer = () => {
   app.set("view engine", "ejs");
   app.set("views", path.join(__dirname, "/resources"));
 
+  app.use(fileUpload());
+
   app.use(
     express.urlencoded({
       extended: true,
     })
   );
 
-  app.get("/:success?", (req, res) => {
+  app.get("/:success?", async (req, res) => {
     const url = configManager.getStreamUrl();
     const isStream = configManager.isStream();
 
@@ -28,9 +31,16 @@ export const startServer = () => {
     });
   });
 
-  app.post("/update", (req, res) => {
+  app.post("/update", async (req, res) => {
     const url = req.body["url"];
     const playStream = req.body["isStream"] === "on";
+
+    if (req.files) {
+      const file = req.files.file as UploadedFile;
+      const uploadPath = __dirname + "/resources/audio/" + file.name;
+      configManager.setFileName(file.name);
+      await file.mv(uploadPath);
+    }
 
     url && configManager.setStreamUrl(url);
     configManager.setStream(playStream);

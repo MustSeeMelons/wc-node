@@ -42,7 +42,9 @@ export const audioPlayManagerFactory = async (): Promise<
   IAudioManager | undefined
 > => {
   try {
-    const background = await loader(`./audio/${configManager.getFileName()}`);
+    const background = await loader(
+      `resources/audio/${configManager.getFileName()}`
+    );
 
     let playback: AudioPlayHandle = play(
       background,
