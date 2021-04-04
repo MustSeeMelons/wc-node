@@ -15,7 +15,7 @@
       integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf"
       crossorigin="anonymous"
     ></script>
-    <title>Cheese</title>
+    <title>Ateja FM</title>
   </head>
   <body>
     <div class="row justify-content-center m-3">
@@ -37,6 +37,22 @@
               placeholder="https://some-stream"
             />
           </div>
+          <div class="form-group">
+            <div class="form-check">
+              <input
+                <% if(isStream) { %>
+                  checked
+                <% } %>
+                name="isStream"
+                type="checkbox"
+                class="form-check-input"
+                id="playStream"
+              />
+              <label class="form-check-label" for="exampleCheck1"
+                >Play stream, not file</label
+              >
+            </div>
+          </div>
           <!-- <div class="form-group">
             <label for="filename">Filename</label>
             <input
@@ -47,7 +63,7 @@
               placeholder="my-song.mp3"
             />
           </div> -->
-          <button type="submit" class="btn btn-block btn-primary">
+          <button type="submit" class="btn btn-block btn-primary mt-2">
             Update
           </button>
         </form>

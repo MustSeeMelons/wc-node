@@ -9,7 +9,6 @@
 
 - Say something at start/end
 - Change song from web
-- Set stream url from web
 
 # Nopetown
 

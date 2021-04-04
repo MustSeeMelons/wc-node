@@ -18,18 +18,24 @@ export const startServer = () => {
 
   app.get("/:success?", (req, res) => {
     const url = configManager.getStreamUrl();
+    const isStream = configManager.isStream();
 
     res.render("index", {
       url,
       filename: "", // it will replace comments too
       success: req.params.success,
+      isStream,
     });
   });
 
   app.post("/update", (req, res) => {
     const url = req.body["url"];
-    if (url) {
-      configManager.setStreamUrl(url);
+    const playStream = req.body["isStream"] === "on";
+
+    url && configManager.setStreamUrl(url);
+    configManager.setStream(playStream);
+
+    if (url || playStream) {
       res.redirect("/true");
     } else {
       res.redirect("/false");
