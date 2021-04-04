@@ -9,7 +9,7 @@
 
 - Say something at start/end
 - Change song from web
-- Play stream option? (can zero handle it?)
+- Set stream url from web
 
 # Nopetown
 

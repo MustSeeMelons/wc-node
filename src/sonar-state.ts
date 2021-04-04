@@ -3,6 +3,7 @@ import { audioPlayManagerFactory, MIN_VOLUME } from "./audio-manager";
 import { fadeInAudio, fadeOutAudio, setVolume } from "./audio-manager";
 import { IAudioStream, streamFactory } from "./stream";
 import { Gpio } from "pigpio";
+import { configManager } from "./config-manager";
 
 const PIN_LED = 23;
 const TRIGGER_DIST = 50;
@@ -56,13 +57,12 @@ export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
       return median(arr);
     };
 
-    // TODO read from file or something
     const playAudio = async () => {
       toggleLed();
-      if (true) {
+      if (configManager.isStream()) {
         stream = streamFactory();
       } else {
-        audio.welcome();
+        audio.startAudio();
       }
 
       await fadeInAudio();
@@ -70,10 +70,10 @@ export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
 
     const stopAudio = async () => {
       await fadeOutAudio();
-      if (true) {
+      if (configManager.isStream()) {
         stream && stream.close();
       } else {
-        audio.bye();
+        audio.stopAudio();
       }
       toggleLed();
     };

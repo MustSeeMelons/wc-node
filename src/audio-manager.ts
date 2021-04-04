@@ -1,17 +1,18 @@
 import { wait } from "./utils";
 import { AudioPlayHandle } from "audio-play";
+import { configManager } from "./config-manager";
 const loader = require("audio-loader");
 const play = require("audio-play");
 const { spawn } = require("child_process");
 
 export const MIN_VOLUME = 30;
 const MAX_VOLUME = 85;
-const VOL_STEP = 5;
-const VOL_WAIT = 150;
+const VOL_STEP = 9;
+const VOL_WAIT = 125;
 
 interface IAudioManager {
-  welcome: () => void;
-  bye: () => void;
+  startAudio: () => void;
+  stopAudio: () => void;
 }
 
 export const setVolume = (volume: number) => {
@@ -41,7 +42,7 @@ export const audioPlayManagerFactory = async (): Promise<
   IAudioManager | undefined
 > => {
   try {
-    const background = await loader("./audio/nero.mp3");
+    const background = await loader(`./audio/${configManager.getFileName()}`);
 
     let playback: AudioPlayHandle = play(
       background,
@@ -54,10 +55,10 @@ export const audioPlayManagerFactory = async (): Promise<
     );
 
     return {
-      welcome: () => {
+      startAudio: () => {
         playback.play();
       },
-      bye: () => {
+      stopAudio: () => {
         playback.pause();
       },
     };
