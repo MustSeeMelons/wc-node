@@ -4,8 +4,12 @@
 - `sudo apt-get install pigpio`
 - `sudo npm start`
 
-# Roadmap
+# TODO
+
+- Say something at start/end
+- Change song from web
+- Play stream option? (can zero handle it?)
+
+# Nopetown
 
 - `say` zero cannot handle this - gets killed
-- try `spawn` once more for volume transition, there are a few hitches still
-

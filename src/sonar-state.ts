@@ -1,7 +1,8 @@
 import { sonarFactory } from "./sonar";
 import { audioPlayManagerFactory } from "./audio-manager";
+import { fadeIn, fadeOut} from "./audio-manager";
+import { wait } from "./utils";
 import { Gpio } from "pigpio";
-const { exec } = require("child_process");
 
 const PIN_LED = 23;
 const TRIGGER_DIST = 50;
@@ -10,6 +11,7 @@ const SAMPLE_COUNT = 4;
 
 const MIN_VOLUME = 30;
 const MAX_VOLUME = 85;
+const VOL_STEP = 5;
 const VOL_WAIT = 150;
 
 export enum SonarState {
@@ -24,41 +26,11 @@ export interface ISonarState {
   getSonarState: () => SonarState;
 }
 
-const wait = async () => {
-  return new Promise<void>((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, VOL_WAIT);
-  });
-}
-
-const fadeIn = async () => {
-  for(let i = MIN_VOLUME; i <= MAX_VOLUME; i += 2) {
-    await new Promise<void>((resolve) => {
-      exec(`amixer set PCM ${i}%`, () => {
-        resolve();
-      });
-    });
-    await wait();
-  }
-}
-
-const fadeOut = async () => {
-  for(let i = MAX_VOLUME; i >= MIN_VOLUME; i -= 1) {
-    await new Promise((resolve) => {
-      exec(`amixer set PCM ${i}%`, () => {
-        resolve();
-      });
-    });
-    await wait();
-  }
-}
-
 export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
   try {
+    await setVolume(MIN_VOLUME);
     const sonar = await sonarFactory();
     const audio = await audioPlayManagerFactory();
-    exec(`amixer set PCM ${MIN_VOLUME}%`);
     const led = new Gpio(PIN_LED, { mode: Gpio.OUTPUT });
 
     let isLedOn = false;
@@ -109,7 +81,7 @@ export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
             sonarState = SonarState.OnTriggerEnd;
             toggleLed();
             audio.welcome();
-            await fadeIn();
+            await fadeInAudio();
           }
           break;
         case SonarState.OnTriggerEnd:
@@ -121,7 +93,7 @@ export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
           if (dist < TRIGGER_DIST) {
             sonarState = SonarState.OffTriggerEnd;
            
-            await fadeOut();
+            await fadeOutAudio();
             toggleLed();
             audio.bye();
           }

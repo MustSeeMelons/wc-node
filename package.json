@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Node version of the Rust version.",
   "scripts": {
-    "start": "ts-node -T src/index.ts"
+    "start": "ts-node -T src/index.ts",
+    "compile": "tsc src/index.ts"
   },
   "dependencies": {
     "audio-loader": "1.0.3",
