@@ -1,6 +1,7 @@
 import { sonarFactory } from "./sonar";
 import { audioPlayManagerFactory, MIN_VOLUME } from "./audio-manager";
 import { fadeInAudio, fadeOutAudio, setVolume } from "./audio-manager";
+import { IAudioStream, streamFactory } from "./stream";
 import { Gpio } from "pigpio";
 
 const PIN_LED = 23;
@@ -25,6 +26,7 @@ export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
     await setVolume(MIN_VOLUME);
     const sonar = await sonarFactory();
     const audio = await audioPlayManagerFactory();
+    let stream: IAudioStream;
     const led = new Gpio(PIN_LED, { mode: Gpio.OUTPUT });
 
     let isLedOn = false;
@@ -54,6 +56,28 @@ export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
       return median(arr);
     };
 
+    // TODO read from file or something
+    const playAudio = async () => {
+      toggleLed();
+      if (true) {
+        stream = streamFactory();
+      } else {
+        audio.welcome();
+      }
+
+      await fadeInAudio();
+    };
+
+    const stopAudio = async () => {
+      await fadeOutAudio();
+      if (true) {
+        stream && stream.close();
+      } else {
+        audio.bye();
+      }
+      toggleLed();
+    };
+
     const stateTick = async () => {
       const samples = [];
       for (let i = 0; i < SAMPLE_COUNT; i++) {
@@ -73,9 +97,7 @@ export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
         case SonarState.OnTrigger:
           if (dist < TRIGGER_DIST) {
             sonarState = SonarState.OnTriggerEnd;
-            toggleLed();
-            audio.welcome();
-            await fadeInAudio();
+            await playAudio();
           }
           break;
         case SonarState.OnTriggerEnd:
@@ -86,10 +108,7 @@ export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
         case SonarState.OffTrigger:
           if (dist < TRIGGER_DIST) {
             sonarState = SonarState.OffTriggerEnd;
-
-            await fadeOutAudio();
-            toggleLed();
-            audio.bye();
+            await stopAudio();
           }
           break;
         case SonarState.OffTriggerEnd:

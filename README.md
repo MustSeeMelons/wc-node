@@ -2,6 +2,7 @@
 
 - `npm i`
 - `sudo apt-get install pigpio`
+- `sudo apt-get install -y mpg123`
 - `sudo npm start`
 
 # TODO
