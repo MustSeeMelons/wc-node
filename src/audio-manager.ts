@@ -48,7 +48,6 @@ export const audioPlayManagerFactory = async (): Promise<
       background,
       {
         autoplay: false,
-        volume: 1,
         loop: true,
       },
       () => {}

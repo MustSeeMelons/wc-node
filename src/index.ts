@@ -1,6 +1,9 @@
 import { sonarStateFactory } from "./sonar-state";
 import { configureClock, CLOCK_PWM } from "pigpio";
 import { wait } from "./utils";
+import { startServer } from "./express";
+
+startServer();
 
 configureClock(1, CLOCK_PWM);
 

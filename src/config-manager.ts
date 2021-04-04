@@ -15,7 +15,7 @@ interface IConfigManager {
   setStream: (value: boolean) => void;
 }
 
-const path = "./resources/config.json";
+const path = "./src/resources/config.json";
 
 let parsed: IConfig;
 
