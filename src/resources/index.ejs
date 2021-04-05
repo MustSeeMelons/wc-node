@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="public/favicon.ico">
+    <link rel="stylesheet" href="public/styles.css" />
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
@@ -21,9 +22,9 @@
       <div class="col-xs-10 col-sm-6">
         <h2>Ateja FM</h2>
         <% if(success === "true") { %>
-        <div class="alert alert-success" role="alert">Updated!</div>
+        <div class="alert alert-success go-away" role="alert">Updated!</div>
         <% } else if(success === "false"){ %>
-        <div class="alert alert-danger" role="alert">Failed!</div>
+        <div class="alert alert-danger go-away" role="alert">Failed!</div>
         <% } %>
         <form 
           id="config-form" 
@@ -62,7 +63,7 @@
                 class="form-check-input"
                 id="playStream"
               />
-              <label class="form-check-label" for="exampleCheck1"
+              <label class="form-check-label" for="playStream"
                 >Stream audio</label
               >
               <small class="form-text text-muted">If unchecked, selected audio file will be played.</small>

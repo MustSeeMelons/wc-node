@@ -9,7 +9,7 @@ import { wait } from "./utils";
 const PIN_LED = 23;
 const TRIGGER_DIST = 50;
 const TRIGGER_END_DIST = TRIGGER_DIST * 2;
-const SAMPLE_COUNT = 4;
+const SAMPLE_COUNT = 3;
 
 export enum SonarState {
   OnTrigger = "OnTrigger",
@@ -85,7 +85,7 @@ export const appLogicLoopFactory = async (
           samples.push(dist);
         }
         // From the sonar spec, 60ms between reads
-        await wait(60);
+        await wait(50);
       }
 
       if (samples.length === 0) {

@@ -8,16 +8,13 @@
 # TODO
 
 - systemd setup (!)
+- Play/Pause from web?
+- Re-boot from web interface?
 
 # If Bored
 
 - Say something at start/end?
 - Override off button (false positives, want quiet?)
-- Remove success msg after some time?
-- Re-boot from web interface?
-- Volume controls on web?
-- All sound options on web?
-- Play/Pause from web?
 
 # Nopetown
 

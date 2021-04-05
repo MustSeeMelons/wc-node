@@ -1,0 +1,22 @@
+@keyframes slideSlide {
+  0% {
+    right: -10em;
+  }
+  25% {
+    right: 1em;
+  }
+  50% {
+    right: 1em;
+  }
+  100% {
+    right: -10em;
+  }
+}
+
+.go-away {
+  position: fixed !important;
+  top: 1em;
+  margin: auto;
+  text-align: center;
+  animation: slideSlide 5s ease forwards;
+}
