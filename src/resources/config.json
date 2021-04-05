@@ -1,1 +1,8 @@
-{"isStream":false,"streamUrl":"http://ice1.somafm.com/u80s-128-mp3","fileName":"nero.mp3"}
+{
+  "isStream": false,
+  "streamUrl": "http://ice1.somafm.com/u80s-128-mp3",
+  "fileName": "nero.mp3",
+  "minVolume": 30,
+  "maxVolume": 85,
+  "volStep": 9
+}

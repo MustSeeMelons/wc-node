@@ -3,11 +3,11 @@ import fileUpload, { UploadedFile } from "express-fileupload";
 import path from "path";
 import { readdirSync } from "fs";
 import { configManager } from "./config-manager";
-import e from "express";
+import { IAudioManager } from "./audio-manager";
 
 const PORT = 8080;
 
-export const startServer = () => {
+export const startServer = (audio: IAudioManager) => {
   const app: Application = express();
 
   app.set("view engine", "ejs");

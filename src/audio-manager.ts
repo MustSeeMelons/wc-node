@@ -5,12 +5,9 @@ const loader = require("audio-loader");
 const play = require("audio-play");
 const { spawn } = require("child_process");
 
-export const MIN_VOLUME = 30;
-const MAX_VOLUME = 85;
-const VOL_STEP = 9;
 const VOL_WAIT = 125;
 
-interface IAudioManager {
+export interface IAudioManager {
   startAudio: () => void;
   stopAudio: () => void;
 }
@@ -25,20 +22,28 @@ export const setVolume = (volume: number) => {
 };
 
 export const fadeInAudio = async () => {
-  for (let i = MIN_VOLUME; i <= MAX_VOLUME; i += VOL_STEP) {
+  for (
+    let i = configManager.getMinVolume();
+    i <= configManager.getMaxVolume();
+    i += configManager.getVolStep()
+  ) {
     await setVolume(i);
     await wait(VOL_WAIT);
   }
 };
 
 export const fadeOutAudio = async () => {
-  for (let i = MAX_VOLUME; i >= MIN_VOLUME; i -= VOL_STEP) {
+  for (
+    let i = configManager.getMaxVolume();
+    i >= configManager.getMinVolume();
+    i -= configManager.getVolStep()
+  ) {
     await setVolume(i);
     await wait(VOL_WAIT);
   }
 };
 
-export const audioPlayManagerFactory = async (): Promise<
+export const audioManagerFactory = async (): Promise<
   IAudioManager | undefined
 > => {
   try {

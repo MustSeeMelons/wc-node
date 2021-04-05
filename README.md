@@ -7,8 +7,17 @@
 
 # TODO
 
-- Say something at start/end
-- Change song from web
+- systemd setup (!)
+
+# If Bored
+
+- Say something at start/end?
+- Override off button (false positives, want quiet?)
+- Remove success msg after some time?
+- Re-boot from web interface?
+- Volume controls on web?
+- All sound options on web?
+- Play/Pause from web?
 
 # Nopetown
 

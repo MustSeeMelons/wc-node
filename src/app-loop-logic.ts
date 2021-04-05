@@ -1,9 +1,10 @@
-import { sonarFactory } from "./sonar";
-import { audioPlayManagerFactory, MIN_VOLUME } from "./audio-manager";
+import { ISonar } from "./sonar";
+import { IAudioManager } from "./audio-manager";
 import { fadeInAudio, fadeOutAudio, setVolume } from "./audio-manager";
 import { IAudioStream, streamFactory } from "./stream";
 import { Gpio } from "pigpio";
 import { configManager } from "./config-manager";
+import { wait } from "./utils";
 
 const PIN_LED = 23;
 const TRIGGER_DIST = 50;
@@ -17,16 +18,17 @@ export enum SonarState {
   OffTriggerEnd = "OffTriggerEnd",
 }
 
-export interface ISonarState {
+export interface IAppLogicLoop {
   stateTick: () => void;
   getSonarState: () => SonarState;
 }
 
-export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
+export const appLogicLoopFactory = async (
+  sonar: ISonar,
+  audio: IAudioManager
+): Promise<IAppLogicLoop | undefined> => {
   try {
-    await setVolume(MIN_VOLUME);
-    const sonar = await sonarFactory();
-    const audio = await audioPlayManagerFactory();
+    await setVolume(configManager.getMinVolume());
     let stream: IAudioStream;
     const led = new Gpio(PIN_LED, { mode: Gpio.OUTPUT });
 
@@ -82,6 +84,8 @@ export const sonarStateFactory = async (): Promise<ISonarState | undefined> => {
         if (dist > 0) {
           samples.push(dist);
         }
+        // From the sonar spec, 60ms between reads
+        await wait(60);
       }
 
       if (samples.length === 0) {
