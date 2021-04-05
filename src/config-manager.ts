@@ -34,6 +34,9 @@ let parsed: IConfig;
 const readConfig = () => {
   const raw = readFileSync(path).toString();
   parsed = JSON.parse(raw) as IConfig;
+  // False on startup
+  parsed.isActive = false;
+  saveConfig();
 };
 
 const saveConfig = () => {
