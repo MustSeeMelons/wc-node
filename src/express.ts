@@ -116,6 +116,6 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
   });
 
   app.listen(PORT, () => {
-    console.log(`Server is up on: ${PORT}..`);
+    console.log(`API is up on: ${PORT}..`);
   });
 };

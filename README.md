@@ -8,13 +8,11 @@
 # TODO
 
 - systemd setup (!)
-- Play/Pause from web?
-- Re-boot from web interface?
+- Re-boot from web interface (restart systemd)?
 
 # If Bored
 
-- Say something at start/end?
-- Override off button (false positives, want quiet?)
+- Override hardrware toggle button
 
 # Nopetown
 

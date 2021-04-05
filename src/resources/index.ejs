@@ -21,7 +21,7 @@
     <div class="row justify-content-center m-3">
       <div class="col-xs-10 col-sm-6">
         <h2>Ateja FM</h2>
-        <div class="btn-group btn-group-toggle col-12 m-3" data-toggle="buttons">
+        <div class="btn-group btn-group-toggle col-12 p-3" data-toggle="buttons">
           <label class="btn btn-primary <%= on %>">
             <input 
               type="radio" 
@@ -44,7 +44,7 @@
               <% } %> 
             >Off
           </label>
-        </div>    
+        </div>
         <% if(success === "true") { %>
         <div class="alert alert-success go-away" role="alert">Updated!</div>
         <% } else if(success === "false"){ %>
@@ -66,6 +66,7 @@
               id="streamUrl"
               placeholder="https://some-stream"
             />
+            <small class="form-text text-muted">Need to toggle off/on to take effect.</small>
           </div>
           <div class="form-group">
             <label for="file">Loop Sound</label>
