@@ -1,4 +1,4 @@
-import express, { Application } from "express";
+import express, { Application, Request, Response } from "express";
 import fileUpload, { UploadedFile } from "express-fileupload";
 import path from "path";
 import { readdirSync } from "fs";
@@ -14,33 +14,43 @@ export const startServer = (audio: IAudioManager) => {
   app.set("views", path.join(__dirname, "/resources"));
 
   app.use(fileUpload());
-
+  app.use(express.json());
   app.use(
     express.urlencoded({
       extended: true,
     })
   );
 
-  app.use(
-    "/favicon.ico",
-    express.static(path.join(__dirname, "/resources/favicon.ico"))
-  );
+  app.use("/public", express.static(path.join(__dirname, "/resources/public")));
 
-  app.get("/:success?", async (req, res) => {
+  const updateHandler = (success: string) => async (
+    req: Request,
+    res: Response
+  ) => {
     const url = configManager.getStreamUrl();
     const isStream = configManager.isStream();
     const filename = configManager.getFileName();
+    const min = configManager.getMinVolume();
+    const max = configManager.getMaxVolume();
+    const step = configManager.getVolStep();
 
     const audioFiles = readdirSync(path.join(__dirname, "/resources/audio"));
 
     res.render("index", {
       url,
       filename,
-      success: req.params.success,
+      success: success,
       isStream,
       audioFiles,
+      min,
+      max,
+      step,
     });
-  });
+  };
+
+  app.get("/", updateHandler(""));
+  app.get("/success", updateHandler("true"));
+  app.get("/fail", updateHandler("false"));
 
   app.post("/update", async (req, res) => {
     const url = req.body["url"];
@@ -60,10 +70,32 @@ export const startServer = (audio: IAudioManager) => {
     configManager.setStream(playStream);
 
     if (url || playStream || audioFile || req.files) {
-      res.redirect("/true");
+      res.redirect("/success");
     } else {
-      res.redirect("/false");
+      res.redirect("/fail");
     }
+  });
+
+  app.post("/volume", (req, res) => {
+    const type = req.body["type"];
+    const val = req.body["value"];
+
+    if (type && val !== undefined) {
+      switch (type) {
+        case "max":
+          configManager.setMaxVolume(+val);
+          audio.setVolume(+val);
+          break;
+        case "min":
+          configManager.setMinVolume(+val);
+          break;
+        case "step":
+          configManager.setVolStep(+val);
+          break;
+      }
+    }
+
+    res.sendStatus(200);
   });
 
   app.listen(PORT, () => {

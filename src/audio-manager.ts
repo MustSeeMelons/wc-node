@@ -10,6 +10,7 @@ const VOL_WAIT = 125;
 export interface IAudioManager {
   startAudio: () => void;
   stopAudio: () => void;
+  setVolume: (volume: number) => void;
 }
 
 export const setVolume = (volume: number) => {
@@ -66,6 +67,9 @@ export const audioManagerFactory = async (): Promise<
       },
       stopAudio: () => {
         playback.pause();
+      },
+      setVolume: (volume: number) => {
+        setVolume(volume);
       },
     };
   } catch (e) {
