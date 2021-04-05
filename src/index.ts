@@ -1,4 +1,4 @@
-import { appLogicLoopFactory } from "./app-loop-logic";
+import { appLogicFactory } from "./app-loop-logic";
 import { configureClock, CLOCK_PWM } from "pigpio";
 import { wait } from "./utils";
 import { startServer } from "./express";
@@ -9,26 +9,22 @@ import { audioManagerFactory } from "./audio-manager";
   // Fix ALSA audio isses caused by pigpio
   configureClock(1, CLOCK_PWM);
 
-  const sonar = await sonarFactory();
-  const audio = await audioManagerFactory();
+  try {
+    console.log("Starting..");
+    const sonar = await sonarFactory();
+    const audio = await audioManagerFactory();
+    const appLogic = await appLogicFactory(sonar, audio);
 
-  startServer(audio);
+    startServer(audio, appLogic);
 
-  appLogicLoopFactory(sonar, audio)
-    .then(async (sonarState) => {
-      if (!sonarState) {
-        console.log("soner no go brr brr");
-        return;
-      } else {
-        console.log("ha ha, we go brr brr");
-      }
+    console.log("Started..");
 
-      while (true) {
-        await sonarState.stateTick();
-        await wait(100);
-      }
-    })
-    .catch((e) => {
-      console.error(e);
-    });
+    while (true) {
+      await appLogic.stateTick();
+      await wait(100);
+    }
+  } catch (e) {
+    console.log("Failed..");
+    console.log(e);
+  }
 })();

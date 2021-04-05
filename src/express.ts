@@ -4,10 +4,11 @@ import path from "path";
 import { readdirSync } from "fs";
 import { configManager } from "./config-manager";
 import { IAudioManager } from "./audio-manager";
+import { IAppLogic } from "./app-loop-logic";
 
 const PORT = 8080;
 
-export const startServer = (audio: IAudioManager) => {
+export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
   const app: Application = express();
 
   app.set("view engine", "ejs");
@@ -33,6 +34,7 @@ export const startServer = (audio: IAudioManager) => {
     const min = configManager.getMinVolume();
     const max = configManager.getMaxVolume();
     const step = configManager.getVolStep();
+    const isActive = configManager.isActive();
 
     const audioFiles = readdirSync(path.join(__dirname, "/resources/audio"));
 
@@ -45,6 +47,8 @@ export const startServer = (audio: IAudioManager) => {
       min,
       max,
       step,
+      on: isActive ? "active" : "",
+      off: !isActive ? "active" : "",
     });
   };
 
@@ -98,7 +102,20 @@ export const startServer = (audio: IAudioManager) => {
     res.sendStatus(200);
   });
 
+  app.post("/state", (req, res) => {
+    const value = !!req.body["value"];
+    configManager.setActive(value);
+
+    if (value) {
+      logic.playAudio();
+    } else {
+      logic.stopAudio();
+    }
+
+    res.sendStatus(200);
+  });
+
   app.listen(PORT, () => {
-    console.log(`Server is up on: ${PORT}, wait for soner..`);
+    console.log(`Server is up on: ${PORT}..`);
   });
 };

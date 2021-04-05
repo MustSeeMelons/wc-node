@@ -18,15 +18,17 @@ export enum SonarState {
   OffTriggerEnd = "OffTriggerEnd",
 }
 
-export interface IAppLogicLoop {
-  stateTick: () => void;
+export interface IAppLogic {
+  stateTick: () => Promise<void>;
   getSonarState: () => SonarState;
+  playAudio: () => Promise<void>;
+  stopAudio: () => Promise<void>;
 }
 
-export const appLogicLoopFactory = async (
+export const appLogicFactory = async (
   sonar: ISonar,
   audio: IAudioManager
-): Promise<IAppLogicLoop | undefined> => {
+): Promise<IAppLogic | undefined> => {
   try {
     await setVolume(configManager.getMinVolume());
     let stream: IAudioStream;
@@ -98,6 +100,7 @@ export const appLogicLoopFactory = async (
         case SonarState.OnTrigger:
           if (dist < TRIGGER_DIST) {
             sonarState = SonarState.OnTriggerEnd;
+            configManager.setActive(true);
             await playAudio();
           }
           break;
@@ -109,6 +112,7 @@ export const appLogicLoopFactory = async (
         case SonarState.OffTrigger:
           if (dist < TRIGGER_DIST) {
             sonarState = SonarState.OffTriggerEnd;
+            configManager.setActive(false);
             await stopAudio();
           }
           break;
@@ -122,6 +126,8 @@ export const appLogicLoopFactory = async (
 
     return {
       stateTick,
+      playAudio,
+      stopAudio,
       getSonarState: () => {
         return sonarState;
       },

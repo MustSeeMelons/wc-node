@@ -7,6 +7,7 @@ interface IConfig {
   minVolume: number;
   maxVolume: number;
   volStep: number;
+  isActive: boolean;
 }
 
 interface IConfigManager {
@@ -22,6 +23,8 @@ interface IConfigManager {
   getMaxVolume: () => number;
   setVolStep: (vol: number) => void;
   getVolStep: () => number;
+  isActive: () => boolean;
+  setActive: (value: boolean) => void;
 }
 
 const path = "./src/resources/config.json";
@@ -81,5 +84,12 @@ export const configManager: IConfigManager = {
   },
   getVolStep: () => {
     return parsed.volStep;
+  },
+  isActive: () => {
+    return parsed.isActive;
+  },
+  setActive: (value: boolean) => {
+    parsed.isActive = value;
+    saveConfig();
   },
 };

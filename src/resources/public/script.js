@@ -7,6 +7,9 @@ const maxVolLabel = document.getElementById("maxVolLabel");
 const minVolLabel = document.getElementById("minVolLabel");
 const volStepLabel = document.getElementById("volStepLabel");
 
+const onButton = document.getElementById("on");
+const offButton = document.getElementById("off");
+
 // Set pesky label values
 maxVolLabel.innerText = `Max Volume: ${maxVol.value}`;
 minVolLabel.innerText = `Min Volume: ${minVol.value}`;
@@ -23,6 +26,24 @@ const applyVolume = (type, value) => {
       value,
     }),
   });
+};
+
+const toggleState = (value) => {
+  fetch("state", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      value,
+    }),
+  })
+    .then((response) => {
+      // TODO show success!
+    })
+    .catch((e) => {
+      // TODO show fail!
+    });
 };
 
 // Add pesky change listeners
@@ -42,4 +63,12 @@ volStep.addEventListener("change", (e) => {
   const val = e.target.value;
   volStepLabel.innerText = `Volume Step: ${val}`;
   applyVolume("step", val);
+});
+
+onButton.addEventListener("click", () => {
+  toggleState(true);
+});
+
+offButton.addEventListener("click", () => {
+  toggleState(false);
 });
