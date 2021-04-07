@@ -12,7 +12,7 @@
 
 # If Bored
 
-- Override hardrware toggle button
+- Override hardrware toggle button (ordered, on the way)
 
 # Nopetown
 

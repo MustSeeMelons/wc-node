@@ -1,0 +1,12 @@
+[Unit]
+Description=Ateja FM Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/node /home/pi/wc-node/dist/index.js
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

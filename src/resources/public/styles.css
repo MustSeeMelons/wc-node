@@ -9,15 +9,19 @@
     right: 1em;
   }
   100% {
-    right: -10em;
+    right: -50%;
   }
 }
 
-.go-away {
+.notification {
   position: fixed !important;
+  right: -50%;
+}
+
+.notify {
   z-index: 100;
   top: 1em;
   margin: auto;
   text-align: center;
-  animation: slideSlide 5s ease forwards;
+  animation: slideSlide 4s ease forwards;
 }

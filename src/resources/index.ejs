@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="manifest" href="public/manifest.json" />
     <meta name="theme-color" content="#ffffff" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -23,6 +22,7 @@
     <div class="row justify-content-center m-3">
       <div class="col-xs-10 col-sm-6">
         <h2>Ateja FM</h2>
+        <small class="form-text text-muted"><%= up %></small>
         <div class="btn-group btn-group-toggle col-12 p-3" data-toggle="buttons">
           <label class="btn btn-primary <%= on %>">
             <input 
@@ -47,11 +47,7 @@
             >Off
           </label>
         </div>
-        <% if(success === "true") { %>
-        <div class="alert alert-success go-away" role="alert">Updated!</div>
-        <% } else if(success === "false"){ %>
-        <div class="alert alert-danger go-away" role="alert">Failed!</div>
-        <% } %>
+        <div id="notification" class="alert notification" role="alert">Updated!</div>
         <form 
           id="config-form" 
           ref="config-form" 

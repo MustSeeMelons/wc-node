@@ -8,7 +8,12 @@ import { IAppLogic } from "./app-loop-logic";
 
 const PORT = 8080;
 
-export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
+export const startServer = (
+  audio: IAudioManager = undefined,
+  logic: IAppLogic = undefined
+) => {
+  const d = new Date();
+  const up = `${d.getFullYear()}/${d.getMonth()}/${d.getDay()} ${d.getHours()}:${d.getMinutes()}`;
   const app: Application = express();
 
   app.set("view engine", "ejs");
@@ -24,7 +29,7 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
 
   app.use("/public", express.static(path.join(__dirname, "/resources/public")));
 
-  const updateHandler = (success: string) => async (
+  const postHandler = (success: string) => async (
     req: Request,
     res: Response
   ) => {
@@ -49,12 +54,13 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
       step,
       on: isActive ? "active" : "",
       off: !isActive ? "active" : "",
+      up: up,
     });
   };
 
-  app.get("/", updateHandler(""));
-  app.get("/success", updateHandler("true"));
-  app.get("/fail", updateHandler("false"));
+  app.get("/", postHandler(""));
+  app.get("/success", postHandler("true"));
+  app.get("/fail", postHandler("false"));
 
   app.post("/update", async (req, res) => {
     const url = req.body["url"];
@@ -74,9 +80,9 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
     configManager.setStream(playStream);
 
     if (url || playStream || audioFile || req.files) {
-      res.redirect("/success");
+      res.redirect("/#success");
     } else {
-      res.redirect("/fail");
+      res.redirect("/#fail");
     }
   });
 

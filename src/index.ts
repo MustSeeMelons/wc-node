@@ -7,22 +7,23 @@ import { audioManagerFactory } from "./audio-manager";
 
 (async () => {
   // Fix ALSA audio isses caused by pigpio
-  configureClock(1, CLOCK_PWM);
+  // configureClock(1, CLOCK_PWM);
 
   try {
     console.log("Starting..");
-    const sonar = await sonarFactory();
-    const audio = await audioManagerFactory();
-    const appLogic = await appLogicFactory(sonar, audio);
+    // const sonar = await sonarFactory();
+    // const audio = await audioManagerFactory();
+    // const appLogic = await appLogicFactory(sonar, audio);
 
-    startServer(audio, appLogic);
+    // startServer(audio, appLogic);
+    startServer();
 
     console.log("Started..");
 
-    while (true) {
-      await appLogic.stateTick();
-      await wait(100);
-    }
+    // while (true) {
+    //   await appLogic.stateTick();
+    //   await wait(100);
+    // }
   } catch (e) {
     console.log("Failed..");
     console.log(e);
