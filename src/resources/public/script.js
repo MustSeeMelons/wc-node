@@ -40,7 +40,7 @@ const applyVolume = (type, value) => {
       if (response.status !== 200) {
         showNotification("Something is a foot!", ["alert-danger"]);
       } else {
-        showNotification("Toggled!", ["alert-success"]);
+        showNotification("Applied!", ["alert-success"]);
       }
     })
     .catch((e) => {

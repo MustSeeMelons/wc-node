@@ -64,6 +64,9 @@ export const appLogicFactory = async (
     const playAudio = async () => {
       toggleLed();
       if (configManager.isStream()) {
+        if (stream) {
+          stream.close();
+        }
         stream = streamFactory();
       } else {
         audio.startAudio();

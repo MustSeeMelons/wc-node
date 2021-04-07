@@ -7,7 +7,6 @@
 
 # TODO
 
-- systemd setup (!)
 - Re-boot from web interface (restart systemd)?
 
 # If Bored

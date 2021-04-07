@@ -20,6 +20,9 @@ export const setVolume = (volume: number) => {
     vol.on("close", () => {
       resolve();
     });
+    vol.on("error", (e) => {
+      console.error(e);
+    });
   });
 };
 
