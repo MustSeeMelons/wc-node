@@ -26,5 +26,5 @@
 - `sudo systemctl status ateja`
 - `sudo systemctl stop ateja`
 - `sudo systemctl restart ateja`
-- `sudo systemtl enable ateja`
-- `sudo systemtl disable ateja`
+- `sudo systemctl enable ateja`
+- `sudo systemctl disable ateja`
