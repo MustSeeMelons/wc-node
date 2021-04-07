@@ -8,10 +8,7 @@ import { IAppLogic } from "./app-loop-logic";
 
 const PORT = 8080;
 
-export const startServer = (
-  audio: IAudioManager = undefined,
-  logic: IAppLogic = undefined
-) => {
+export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
   const d = new Date();
   const up = `${d.getFullYear()}/${d.getMonth()}/${d.getDay()} ${d.getHours()}:${d.getMinutes()}`;
   const app: Application = express();

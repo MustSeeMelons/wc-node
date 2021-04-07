@@ -17,3 +17,14 @@
 # Nopetown
 
 - `say` zero cannot handle this - gets killed
+
+# Systemd
+
+- `sudo systemctl daemon-reload` - reload systemd
+- `sudo systemctl start ateja`
+- `journalctl -u ateja.service -f` - tailing logs
+- `sudo systemctl status ateja`
+- `sudo systemctl stop ateja`
+- `sudo systemctl restart ateja`
+- `sudo systemtl enable ateja`
+- `sudo systemtl disable ateja`
