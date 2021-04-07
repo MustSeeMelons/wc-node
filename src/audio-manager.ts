@@ -1,3 +1,4 @@
+import path from "path";
 import { wait } from "./utils";
 import { AudioPlayHandle } from "audio-play";
 import { configManager } from "./config-manager";
@@ -49,7 +50,7 @@ export const audioManagerFactory = async (): Promise<
 > => {
   try {
     const background = await loader(
-      `./src/resources/audio/${configManager.getFileName()}`
+      path.join(__dirname, `/resources/audio/${configManager.getFileName()}`)
     );
 
     let playback: AudioPlayHandle = play(
