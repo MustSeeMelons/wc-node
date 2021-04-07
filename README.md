@@ -7,7 +7,10 @@
 
 # TODO
 
-- Re-boot from web interface (restart systemd)?
+- Re-boot from web interface (restart systemd)
+- Fix time formatting missing 0's
+- Currently playing song
+- Enable/Disable completly
 
 # If Bored
 
