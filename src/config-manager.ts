@@ -1,4 +1,5 @@
 import { readFileSync, writeFileSync } from "fs";
+import path from "path";
 
 interface IConfig {
   isStream: boolean;
@@ -27,12 +28,12 @@ interface IConfigManager {
   setActive: (value: boolean) => void;
 }
 
-const path = "./src/resources/config.json";
+const configPath = path.join(__dirname, "/resources/config.json");
 
 let parsed: IConfig;
 
 const readConfig = () => {
-  const raw = readFileSync(path).toString();
+  const raw = readFileSync(configPath).toString();
   parsed = JSON.parse(raw) as IConfig;
   // False on startup
   parsed.isActive = false;
@@ -40,7 +41,7 @@ const readConfig = () => {
 };
 
 const saveConfig = () => {
-  writeFileSync(path, JSON.stringify(parsed));
+  writeFileSync(configPath, JSON.stringify(parsed));
 };
 
 readConfig();
