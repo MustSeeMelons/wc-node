@@ -6,7 +6,7 @@ import { configManager } from "./config-manager";
 import { IAudioManager } from "./audio-manager";
 import { IAppLogic } from "./app-loop-logic";
 import { dateToString } from "./utils";
-const { spawn } = require("child_process");
+const { exec } = require("child_process");
 
 const PORT = 8080;
 
@@ -120,12 +120,8 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
   });
 
   app.get("/reboot", (req, res) => {
-    const reboot = spawn("systemctl", ["restart", "ateja"]);
-    reboot.on("error", (e) => {
-      console.error(e);
-      res.sendStatus(500);
-    });
     res.sendStatus(200);
+    exec("systemctl restart ateja");
   });
 
   app.listen(PORT, () => {
