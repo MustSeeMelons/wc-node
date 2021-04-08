@@ -1,4 +1,3 @@
-// Get pesky elements
 const maxVol = document.getElementById("maxVol");
 const minVol = document.getElementById("minVol");
 const volStep = document.getElementById("volStep");
@@ -20,7 +19,23 @@ notification.onanimationend = () => {
   );
 };
 
-// Set pesky label values
+const simpleHandler = (successMsg = "Done!") => (response) => {
+  if (response.status !== 200) {
+    showNotification("Something is a foot!", ["alert-danger"]);
+  } else {
+    showNotification(successMsg, ["alert-success"]);
+  }
+};
+
+const errHandler = (err) => {
+  showNotification("Something is a foot!", ["alert-danger"]);
+};
+
+const rebootBtn = document.getElementById("reboot");
+rebootBtn.addEventListener("click", () => {
+  fetch("reboot").then(simpleHandler).catch(errHandler);
+});
+
 maxVolLabel.innerText = `Max Volume: ${maxVol.value}`;
 minVolLabel.innerText = `Min Volume: ${minVol.value}`;
 volStepLabel.innerText = `Volume Step: ${volStep.value}`;
@@ -36,16 +51,8 @@ const applyVolume = (type, value) => {
       value,
     }),
   })
-    .then((response) => {
-      if (response.status !== 200) {
-        showNotification("Something is a foot!", ["alert-danger"]);
-      } else {
-        showNotification("Applied!", ["alert-success"]);
-      }
-    })
-    .catch((e) => {
-      showNotification("Something is a foot!", ["alert-danger"]);
-    });
+    .then(simpleHandler())
+    .catch(errHandler);
 };
 
 const toggleState = (value) => {
@@ -58,16 +65,8 @@ const toggleState = (value) => {
       value,
     }),
   })
-    .then((response) => {
-      if (response.status !== 200) {
-        showNotification("Something is a foot!", ["alert-danger"]);
-      } else {
-        showNotification("Toggled!", ["alert-success"]);
-      }
-    })
-    .catch((e) => {
-      showNotification("Something is a foot!", ["alert-danger"]);
-    });
+    .then(simpleHandler())
+    .catch(errHandler);
 };
 
 // Add pesky change listeners
