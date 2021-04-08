@@ -8,9 +8,9 @@
 # TODO
 
 - Re-boot from web interface (restart systemd)
-- Fix time formatting missing 0's
 - Currently playing song
 - Enable/Disable completly
+- List of stream urls
 
 # If Bored
 
