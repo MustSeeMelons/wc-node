@@ -7,7 +7,6 @@
 
 # TODO
 
-- Re-boot from web interface (restart systemd)
 - Currently playing song
 - Enable/Disable completly
 - List of stream urls
