@@ -8,7 +8,6 @@
 # TODO
 
 - Currently playing song
-- Enable/Disable completly
 - List of stream urls
 
 # If Bored

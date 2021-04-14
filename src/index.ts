@@ -24,7 +24,6 @@ import { configManager } from "./config-manager";
       if (!configManager.isSonarDisabled()) {
         await appLogic.stateTick();
       }
-      await wait(100);
     }
   } catch (e) {
     console.log("Failed..");
