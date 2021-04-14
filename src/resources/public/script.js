@@ -48,7 +48,7 @@ rebootBtn.addEventListener("click", () => {
 
 const shutdownBtn = document.getElementById("shutdown");
 shutdownBtn.addEventListener("click", () => {
-  fetch("shuitdown")
+  fetch("shutdown")
     .then(simpleHandler)
     .then(() => {
       document.body.classList.add("no-scroll");
