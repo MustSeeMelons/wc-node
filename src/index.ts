@@ -5,7 +5,6 @@ import { startServer } from "./express";
 import { sonarFactory } from "./sonar";
 import { audioManagerFactory } from "./audio-manager";
 import { configManager } from "./config-manager";
-import e from "express";
 
 (async () => {
   // Fix ALSA audio isses caused by pigpio

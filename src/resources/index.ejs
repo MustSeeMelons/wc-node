@@ -20,9 +20,14 @@
   </head>
   <body>
     <div class="row justify-content-center m-3">
+      <div id="bg" class="background">
+        <div id="bb-msg" class="bb-msg">
+          Some text
+        </div>
+      </div>
       <div class="col-xs-10 col-sm-6">
         <div class="row">
-          <h2 class="m-0">Ateja FM</h2><button id="reboot" type="button" class="btn btn-info ml-2">Reboot</button>
+          <h2 class="m-0">Ateja FM</h2><button id="reboot" type="button" class="btn btn-info ml-2">Reboot</button><button id="shutdown" type="button" class="btn btn-danger ml-2">Shutdown</button>
         </div>
         <small class="form-text text-muted"><%= up %></small>
         <div class="btn-group btn-group-toggle col-12 p-3" data-toggle="buttons">
@@ -74,7 +79,6 @@
             >Disable Sonar
           </label>
         </div>
-
         <div id="notification" class="alert notification" role="alert">Updated!</div>
         <form 
           id="config-form" 

@@ -36,7 +36,26 @@ const errHandler = (err) => {
 
 const rebootBtn = document.getElementById("reboot");
 rebootBtn.addEventListener("click", () => {
-  fetch("reboot").then(simpleHandler).catch(errHandler);
+  fetch("reboot")
+    .then(simpleHandler)
+    .then(() => {
+      document.body.classList.add("no-scroll");
+      document.getElementById("bg").style.display = "flex";
+      document.getElementById("bb-msg").innerText = "Come back in 5 minutes!";
+    })
+    .catch(errHandler);
+});
+
+const shutdownBtn = document.getElementById("shutdown");
+shutdownBtn.addEventListener("click", () => {
+  fetch("shuitdown")
+    .then(simpleHandler)
+    .then(() => {
+      document.body.classList.add("no-scroll");
+      document.getElementById("bg").style.display = "flex";
+      document.getElementById("bb-msg").innerText = "Shutting down, bye.";
+    })
+    .catch(errHandler);
 });
 
 maxVolLabel.innerText = `Max Volume: ${maxVol.value}`;

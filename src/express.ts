@@ -133,6 +133,11 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
     exec("systemctl restart ateja");
   });
 
+  app.get("/reboot", (req, res) => {
+    res.sendStatus(200);
+    exec("sudo shutdown -h now");
+  });
+
   app.listen(PORT, () => {
     console.log(`API is up on: ${PORT}..`);
   });
