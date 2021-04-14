@@ -9,6 +9,7 @@ interface IConfig {
   maxVolume: number;
   volStep: number;
   isActive: boolean;
+  isSonarDisabled: boolean;
 }
 
 interface IConfigManager {
@@ -26,6 +27,8 @@ interface IConfigManager {
   getVolStep: () => number;
   isActive: () => boolean;
   setActive: (value: boolean) => void;
+  isSonarDisabled: () => boolean;
+  setSonarDisabled: (value: boolean) => void;
 }
 
 const configPath = path.join(__dirname, "/resources/config.json");
@@ -94,6 +97,13 @@ export const configManager: IConfigManager = {
   },
   setActive: (value: boolean) => {
     parsed.isActive = value;
+    saveConfig();
+  },
+  isSonarDisabled: () => {
+    return parsed.isSonarDisabled;
+  },
+  setSonarDisabled: (value: boolean) => {
+    parsed.isSonarDisabled = value;
     saveConfig();
   },
 };

@@ -9,6 +9,9 @@ const volStepLabel = document.getElementById("volStepLabel");
 const onButton = document.getElementById("on");
 const offButton = document.getElementById("off");
 
+const sonarOnButton = document.getElementById("sonarOn");
+const sonarOffButton = document.getElementById("sonarOff");
+
 const notification = document.getElementById("notification");
 notification.onanimationend = () => {
   notification.classList.remove(
@@ -69,6 +72,20 @@ const toggleState = (value) => {
     .catch(errHandler);
 };
 
+const toggleSonar = (value) => {
+  fetch("sonar", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      value,
+    }),
+  })
+    .then(simpleHandler())
+    .catch(errHandler);
+};
+
 // Add pesky change listeners
 maxVol.addEventListener("change", (e) => {
   const val = e.target.value;
@@ -94,6 +111,14 @@ onButton.addEventListener("click", () => {
 
 offButton.addEventListener("click", () => {
   toggleState(false);
+});
+
+sonarOnButton.addEventListener("click", () => {
+  toggleSonar(false);
+});
+
+sonarOffButton.addEventListener("click", () => {
+  toggleSonar(true);
 });
 
 const notifConfig = {

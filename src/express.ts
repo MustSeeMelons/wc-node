@@ -10,7 +10,10 @@ const { exec } = require("child_process");
 
 const PORT = 8080;
 
-export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
+export const startServer = (
+  audio: IAudioManager = undefined,
+  logic: IAppLogic = undefined
+) => {
   const up = dateToString();
   const app: Application = express();
 
@@ -38,6 +41,7 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
     const max = configManager.getMaxVolume();
     const step = configManager.getVolStep();
     const isActive = configManager.isActive();
+    const isSonarDisabled = configManager.isSonarDisabled();
 
     const audioFiles = readdirSync(path.join(__dirname, "/resources/audio"));
 
@@ -52,7 +56,9 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
       step,
       on: isActive ? "active" : "",
       off: !isActive ? "active" : "",
-      up: up,
+      up,
+      enableSonar: !isSonarDisabled ? "active" : "",
+      disableSonar: isSonarDisabled ? "active" : "",
     });
   };
 
@@ -116,6 +122,12 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
       logic.stopAudio();
     }
 
+    res.sendStatus(200);
+  });
+
+  app.post("/sonar", (req, res) => {
+    const value = !!req.body["value"];
+    configManager.setSonarDisabled(value);
     res.sendStatus(200);
   });
 

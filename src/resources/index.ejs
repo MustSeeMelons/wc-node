@@ -35,7 +35,7 @@
               <% if(on !== "") {%>
                 checked
               <% } %>  
-              >On
+              >Play Audio
           </label>
           <label class="btn btn-primary <%= off %>">
             <input 
@@ -46,9 +46,35 @@
               <% if(off !== "") {%>
                 checked
               <% } %> 
-            >Off
+            >Stop Audio
           </label>
         </div>
+
+        <div class="btn-group btn-group-toggle col-12 p-3" data-toggle="buttons">
+          <label class="btn btn-primary <%= enableSonar %>">
+            <input 
+              type="radio" 
+              name="options" 
+              id="sonarOn" 
+              autocomplete="off"
+              <% if(enableSonar !== "") {%>
+                checked
+              <% } %>  
+              >Enable Sonar
+          </label>
+          <label class="btn btn-primary <%= disableSonar %>">
+            <input 
+              type="radio"
+              name="options" 
+              id="sonarOff" 
+              autocomplete="off"
+              <% if(disableSonar !== "") {%>
+                checked
+              <% } %> 
+            >Disable Sonar
+          </label>
+        </div>
+
         <div id="notification" class="alert notification" role="alert">Updated!</div>
         <form 
           id="config-form" 

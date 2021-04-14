@@ -52,25 +52,26 @@ export const audioManagerFactory = async (): Promise<
   IAudioManager | undefined
 > => {
   try {
-    const background = await loader(
-      path.join(__dirname, `/resources/audio/${configManager.getFileName()}`)
-    );
+    // TODO This is veeeery slow.. - in the bin?
+    // const background = await loader(
+    //   path.join(__dirname, `/resources/audio/${configManager.getFileName()}`)
+    // );
 
-    let playback: AudioPlayHandle = play(
-      background,
-      {
-        autoplay: false,
-        loop: true,
-      },
-      () => {}
-    );
+    // let playback: AudioPlayHandle = play(
+    //   background,
+    //   {
+    //     autoplay: false,
+    //     loop: true,
+    //   },
+    //   () => {}
+    // );
 
     return {
       startAudio: () => {
-        playback.play();
+        // playback.play();
       },
       stopAudio: () => {
-        playback.pause();
+        // playback.pause();
       },
       setVolume: (volume: number) => {
         setVolume(volume);

@@ -4,6 +4,7 @@ import { wait } from "./utils";
 import { startServer } from "./express";
 import { sonarFactory } from "./sonar";
 import { audioManagerFactory } from "./audio-manager";
+import { configManager } from "./config-manager";
 
 (async () => {
   // Fix ALSA audio isses caused by pigpio
@@ -16,11 +17,13 @@ import { audioManagerFactory } from "./audio-manager";
     const appLogic = await appLogicFactory(sonar, audio);
 
     startServer(audio, appLogic);
-
+    // startServer();
     console.log("Started..");
 
     while (true) {
-      await appLogic.stateTick();
+      if (!configManager.isSonarDisabled()) {
+        await appLogic.stateTick();
+      }
       await wait(100);
     }
   } catch (e) {
