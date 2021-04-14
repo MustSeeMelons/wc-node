@@ -22,6 +22,7 @@ import { configManager } from "./config-manager";
     while (true) {
       if (!configManager.isSonarDisabled()) {
         await appLogic.stateTick();
+        wait(10);
       }
     }
   } catch (e) {
