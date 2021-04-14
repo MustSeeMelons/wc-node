@@ -16,8 +16,7 @@ import { configManager } from "./config-manager";
     const audio = await audioManagerFactory();
     const appLogic = await appLogicFactory(sonar, audio);
 
-    startServer(audio, appLogic);
-    // startServer();
+    await startServer(audio, appLogic);
     console.log("Started..");
 
     while (true) {

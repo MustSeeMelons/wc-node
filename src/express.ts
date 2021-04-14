@@ -10,133 +10,136 @@ const { exec } = require("child_process");
 
 const PORT = 8080;
 
-export const startServer = (
-  audio: IAudioManager = undefined,
-  logic: IAppLogic = undefined
-) => {
-  const up = dateToString();
-  const app: Application = express();
+export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
+  return new Promise<void>((resolve, reject) => {
+    const up = dateToString();
+    const app: Application = express();
 
-  app.set("view engine", "ejs");
-  app.set("views", path.join(__dirname, "/resources"));
+    app.set("view engine", "ejs");
+    app.set("views", path.join(__dirname, "/resources"));
 
-  app.use(fileUpload());
-  app.use(express.json());
-  app.use(
-    express.urlencoded({
-      extended: true,
-    })
-  );
+    app.use(fileUpload());
+    app.use(express.json());
+    app.use(
+      express.urlencoded({
+        extended: true,
+      })
+    );
 
-  app.use("/public", express.static(path.join(__dirname, "/resources/public")));
+    app.use(
+      "/public",
+      express.static(path.join(__dirname, "/resources/public"))
+    );
 
-  const postHandler = (success: string) => async (
-    req: Request,
-    res: Response
-  ) => {
-    const url = configManager.getStreamUrl();
-    const isStream = configManager.isStream();
-    const filename = configManager.getFileName();
-    const min = configManager.getMinVolume();
-    const max = configManager.getMaxVolume();
-    const step = configManager.getVolStep();
-    const isActive = configManager.isActive();
-    const isSonarDisabled = configManager.isSonarDisabled();
+    const postHandler = (success: string) => async (
+      req: Request,
+      res: Response
+    ) => {
+      const url = configManager.getStreamUrl();
+      const isStream = configManager.isStream();
+      const filename = configManager.getFileName();
+      const min = configManager.getMinVolume();
+      const max = configManager.getMaxVolume();
+      const step = configManager.getVolStep();
+      const isActive = configManager.isActive();
+      const isSonarDisabled = configManager.isSonarDisabled();
 
-    const audioFiles = readdirSync(path.join(__dirname, "/resources/audio"));
+      const audioFiles = readdirSync(path.join(__dirname, "/resources/audio"));
 
-    res.render("index", {
-      url,
-      filename,
-      success: success,
-      isStream,
-      audioFiles,
-      min,
-      max,
-      step,
-      on: isActive ? "active" : "",
-      off: !isActive ? "active" : "",
-      up,
-      enableSonar: !isSonarDisabled ? "active" : "",
-      disableSonar: isSonarDisabled ? "active" : "",
-    });
-  };
+      res.render("index", {
+        url,
+        filename,
+        success: success,
+        isStream,
+        audioFiles,
+        min,
+        max,
+        step,
+        on: isActive ? "active" : "",
+        off: !isActive ? "active" : "",
+        up,
+        enableSonar: !isSonarDisabled ? "active" : "",
+        disableSonar: isSonarDisabled ? "active" : "",
+      });
+    };
 
-  app.get("/", postHandler(""));
-  app.get("/success", postHandler("true"));
-  app.get("/fail", postHandler("false"));
+    app.get("/", postHandler(""));
+    app.get("/success", postHandler("true"));
+    app.get("/fail", postHandler("false"));
 
-  app.post("/update", async (req, res) => {
-    const url = req.body["url"];
-    const playStream = req.body["isStream"] === "on";
-    const audioFile = req.body["audioFile"];
+    app.post("/update", async (req, res) => {
+      const url = req.body["url"];
+      const playStream = req.body["isStream"] === "on";
+      const audioFile = req.body["audioFile"];
 
-    if (req.files) {
-      const file = req.files.file as UploadedFile;
-      const uploadPath = __dirname + "/resources/audio/" + file.name;
-      configManager.setFileName(file.name);
-      await file.mv(uploadPath);
-    } else if (audioFile) {
-      configManager.setFileName(audioFile);
-    }
-
-    url && configManager.setStreamUrl(url);
-    configManager.setStream(playStream);
-
-    if (url || playStream || audioFile || req.files) {
-      res.redirect("/#success");
-    } else {
-      res.redirect("/#fail");
-    }
-  });
-
-  app.post("/volume", (req, res) => {
-    const type = req.body["type"];
-    const val = req.body["value"];
-
-    if (type && val !== undefined) {
-      switch (type) {
-        case "max":
-          configManager.setMaxVolume(+val);
-          audio.setVolume(+val);
-          break;
-        case "min":
-          configManager.setMinVolume(+val);
-          break;
-        case "step":
-          configManager.setVolStep(+val);
-          break;
+      if (req.files) {
+        const file = req.files.file as UploadedFile;
+        const uploadPath = __dirname + "/resources/audio/" + file.name;
+        configManager.setFileName(file.name);
+        await file.mv(uploadPath);
+      } else if (audioFile) {
+        configManager.setFileName(audioFile);
       }
-    }
 
-    res.sendStatus(200);
-  });
+      url && configManager.setStreamUrl(url);
+      configManager.setStream(playStream);
 
-  app.post("/state", (req, res) => {
-    const value = !!req.body["value"];
-    configManager.setActive(value);
+      if (url || playStream || audioFile || req.files) {
+        res.redirect("/#success");
+      } else {
+        res.redirect("/#fail");
+      }
+    });
 
-    if (value) {
-      logic.playAudio();
-    } else {
-      logic.stopAudio();
-    }
+    app.post("/volume", (req, res) => {
+      const type = req.body["type"];
+      const val = req.body["value"];
 
-    res.sendStatus(200);
-  });
+      if (type && val !== undefined) {
+        switch (type) {
+          case "max":
+            configManager.setMaxVolume(+val);
+            audio.setVolume(+val);
+            break;
+          case "min":
+            configManager.setMinVolume(+val);
+            break;
+          case "step":
+            configManager.setVolStep(+val);
+            break;
+        }
+      }
 
-  app.post("/sonar", (req, res) => {
-    const value = !!req.body["value"];
-    configManager.setSonarDisabled(value);
-    res.sendStatus(200);
-  });
+      res.sendStatus(200);
+    });
 
-  app.get("/reboot", (req, res) => {
-    res.sendStatus(200);
-    exec("systemctl restart ateja");
-  });
+    app.post("/state", (req, res) => {
+      const value = !!req.body["value"];
+      configManager.setActive(value);
 
-  app.listen(PORT, () => {
-    console.log(`API is up on: ${PORT}..`);
+      if (value) {
+        logic.playAudio();
+      } else {
+        logic.stopAudio();
+      }
+
+      res.sendStatus(200);
+    });
+
+    app.post("/sonar", (req, res) => {
+      const value = !!req.body["value"];
+      configManager.setSonarDisabled(value);
+      res.sendStatus(200);
+    });
+
+    app.get("/reboot", (req, res) => {
+      res.sendStatus(200);
+      exec("systemctl restart ateja");
+    });
+
+    app.listen(PORT, () => {
+      console.log(`API is up on: ${PORT}..`);
+      resolve();
+    });
   });
 };
