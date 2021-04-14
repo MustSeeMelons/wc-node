@@ -20,9 +20,9 @@ import { configManager } from "./config-manager";
     console.log("Started..");
 
     while (true) {
-      if (!configManager.isSonarDisabled()) {
-        await appLogic.stateTick();
-      }
+      // if (!configManager.isSonarDisabled()) {
+      await appLogic.stateTick();
+      // }
       await wait(100);
     }
   } catch (e) {
