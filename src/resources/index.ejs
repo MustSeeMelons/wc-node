@@ -16,6 +16,7 @@
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
     <title>Ateja FM</title>
   </head>
   <body>
@@ -97,48 +98,6 @@
               placeholder="https://some-stream"
             />
             <small class="form-text text-muted">Need to toggle off/on to take effect.</small>
-          </div>
-          <div class="form-group">
-            <label for="file">Loop Sound</label>
-            <input 
-              class="form-control-file"
-              type="file"
-              name="file" 
-              id="file"/>
-              <small class="form-text text-muted">The uploaded audio will be used as loop audio.</small>
-          </div>
-          <div class="form-group">
-            <div class="form-check">
-              <input
-                <% if(isStream) { %>
-                  checked
-                <% } %>
-                name="isStream"
-                type="checkbox"
-                class="form-check-input"
-                id="playStream"
-              />
-              <label class="form-check-label" for="playStream"
-                >Stream audio</label
-              >
-              <small class="form-text text-muted">If unchecked, selected audio file will be played.</small>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="audioFiles">Selected Loop Audio</label>
-            <select class="form-control" id="audioFiles" name="audioFile">
-              <% for(var i=0; i < audioFiles.length; i++) { %>
-                <option 
-                  <% if(filename === audioFiles[i]) { %>
-                    selected
-                  <% } %>
-                  >
-                  <%= audioFiles[i] %>
-                </option>
-              <% } %>
-            </select>
-            <small class="form-text text-muted">No effect if uploading a file.</small>
-            <small class="form-text text-muted">Restart required to take effect.</small>
           </div>
           <div class="form-group">
             <label for="maxVol" id="maxVolLabel">Max Volume</label>

@@ -23,7 +23,10 @@ export interface IAppLogic {
   getSonarState: () => SonarState;
   playAudio: () => Promise<void>;
   stopAudio: () => Promise<void>;
+  setStreamDataCallback: (cb: (data: string) => void) => void;
 }
+
+let streamDataCallback: (data: string) => void;
 
 export const appLogicFactory = async (
   sonar: ISonar,
@@ -63,22 +66,17 @@ export const appLogicFactory = async (
 
     const playAudio = async () => {
       toggleLed();
-      if (configManager.isStream()) {
-        if (stream) {
-          stream.close();
-        }
-        stream = streamFactory();
-      } else {
-        audio.startAudio();
+      if (stream) {
+        stream.close();
       }
 
+      stream = streamFactory(streamDataCallback);
       await fadeInAudio();
     };
 
     const stopAudio = async () => {
       await fadeOutAudio();
       stream && stream.close();
-      audio.stopAudio();
       toggleLed();
     };
 
@@ -133,6 +131,13 @@ export const appLogicFactory = async (
       stopAudio,
       getSonarState: () => {
         return sonarState;
+      },
+      setStreamDataCallback: (cb) => {
+        streamDataCallback = cb;
+
+        setInterval(() => {
+          cb(Math.random().toFixed(6));
+        }, 1000);
       },
     };
   } catch (e) {

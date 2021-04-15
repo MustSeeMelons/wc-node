@@ -167,3 +167,9 @@ if (window.location.hash) {
     showNotification("I just borked.", ["alert-warning"]);
   }
 }
+
+var socket = io();
+
+socket.on("song", (data) => {
+  console.log(data);
+});

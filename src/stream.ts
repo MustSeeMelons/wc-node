@@ -5,8 +5,12 @@ export interface IAudioStream {
   close: () => void;
 }
 
-export const streamFactory = () => {
+export const streamFactory = (cb: (data: string) => void) => {
   const st = spawn("mpg123", [configManager.getStreamUrl()]);
+
+  st.stdout.on("data", (data) => {
+    cb(data);
+  });
 
   return {
     close: () => {

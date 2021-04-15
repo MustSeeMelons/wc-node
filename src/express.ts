@@ -1,23 +1,30 @@
 import express, { Application, Request, Response } from "express";
-import fileUpload, { UploadedFile } from "express-fileupload";
 import path from "path";
 import { readdirSync } from "fs";
 import { configManager } from "./config-manager";
 import { IAudioManager } from "./audio-manager";
 import { IAppLogic } from "./app-loop-logic";
 import { dateToString } from "./utils";
+import { Server, Socket } from "socket.io";
+import { createServer } from "http";
 const { exec } = require("child_process");
 
 const PORT = 8080;
 
-export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
+let clients: Socket[] = [];
+
+export const startServer = (
+  audio: IAudioManager = undefined,
+  logic: IAppLogic = undefined
+) => {
   const up = dateToString();
   const app: Application = express();
+
+  const httpServer = createServer(app);
 
   app.set("view engine", "ejs");
   app.set("views", path.join(__dirname, "/resources"));
 
-  app.use(fileUpload());
   app.use(express.json());
   app.use(
     express.urlencoded({
@@ -32,8 +39,6 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
     res: Response
   ) => {
     const url = configManager.getStreamUrl();
-    const isStream = configManager.isStream();
-    const filename = configManager.getFileName();
     const min = configManager.getMinVolume();
     const max = configManager.getMaxVolume();
     const step = configManager.getVolStep();
@@ -44,9 +49,7 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
 
     res.render("index", {
       url,
-      filename,
       success: success,
-      isStream,
       audioFiles,
       min,
       max,
@@ -65,22 +68,10 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
 
   app.post("/update", async (req, res) => {
     const url = req.body["url"];
-    const playStream = req.body["isStream"] === "on";
-    const audioFile = req.body["audioFile"];
-
-    if (req.files) {
-      const file = req.files.file as UploadedFile;
-      const uploadPath = __dirname + "/resources/audio/" + file.name;
-      configManager.setFileName(file.name);
-      await file.mv(uploadPath);
-    } else if (audioFile) {
-      configManager.setFileName(audioFile);
-    }
 
     url && configManager.setStreamUrl(url);
-    configManager.setStream(playStream);
 
-    if (url || playStream || audioFile || req.files) {
+    if (url) {
       res.redirect("/#success");
     } else {
       res.redirect("/#fail");
@@ -138,7 +129,24 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
     exec("sudo shutdown -h now");
   });
 
-  app.listen(PORT, () => {
+  const io = new Server(httpServer);
+
+  io.on("connection", (socket) => {
+    clients.push(socket);
+
+    socket.on("disconnect", () => {
+      clients = clients.filter((c) => c !== socket);
+    });
+  });
+
+  httpServer.listen(PORT, () => {
     console.log(`API is up on: ${PORT}..`);
+  });
+
+  // Passing callback for socket data events
+  logic.setStreamDataCallback((data) => {
+    clients.forEach((client) => {
+      client.emit(data);
+    });
   });
 };

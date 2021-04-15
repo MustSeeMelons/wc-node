@@ -1,16 +1,10 @@
-import path from "path";
 import { wait } from "./utils";
-import { AudioPlayHandle } from "audio-play";
 import { configManager } from "./config-manager";
-const loader = require("audio-loader");
-const play = require("audio-play");
 const { spawn } = require("child_process");
 
 const VOL_WAIT = 125;
 
 export interface IAudioManager {
-  startAudio: () => void;
-  stopAudio: () => void;
   setVolume: (volume: number) => void;
 }
 
@@ -52,27 +46,7 @@ export const audioManagerFactory = async (): Promise<
   IAudioManager | undefined
 > => {
   try {
-    // TODO This is veeeery slow.. - in the bin?
-    // const background = await loader(
-    //   path.join(__dirname, `/resources/audio/${configManager.getFileName()}`)
-    // );
-
-    // let playback: AudioPlayHandle = play(
-    //   background,
-    //   {
-    //     autoplay: false,
-    //     loop: true,
-    //   },
-    //   () => {}
-    // );
-
     return {
-      startAudio: () => {
-        // playback.play();
-      },
-      stopAudio: () => {
-        // playback.pause();
-      },
       setVolume: (volume: number) => {
         setVolume(volume);
       },

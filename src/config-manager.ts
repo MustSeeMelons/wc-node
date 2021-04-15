@@ -2,9 +2,7 @@ import { readFileSync, writeFileSync } from "fs";
 import path from "path";
 
 interface IConfig {
-  isStream: boolean;
   streamUrl: string;
-  fileName: string;
   minVolume: number;
   maxVolume: number;
   volStep: number;
@@ -13,12 +11,8 @@ interface IConfig {
 }
 
 interface IConfigManager {
-  isStream: () => boolean;
   setStreamUrl: (url: string) => void;
   getStreamUrl: () => string;
-  setFileName: (name: string) => void;
-  getFileName: () => string;
-  setStream: (value: boolean) => void;
   setMinVolume: (vol: number) => void;
   getMinVolume: () => number;
   setMaxVolume: (vol: number) => void;
@@ -50,26 +44,12 @@ const saveConfig = () => {
 readConfig();
 
 export const configManager: IConfigManager = {
-  isStream: () => {
-    return parsed.isStream;
-  },
   setStreamUrl: (url: string) => {
     parsed.streamUrl = url;
     saveConfig();
   },
   getStreamUrl: () => {
     return parsed.streamUrl;
-  },
-  setFileName: (name: string) => {
-    parsed.fileName = name;
-    saveConfig();
-  },
-  getFileName: () => {
-    return parsed.fileName;
-  },
-  setStream: (value: boolean) => {
-    parsed.isStream = value;
-    saveConfig();
   },
   setMinVolume: (vol: number) => {
     parsed.minVolume = vol;
