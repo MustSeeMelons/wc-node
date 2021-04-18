@@ -170,6 +170,7 @@ if (window.location.hash) {
 
 var socket = io();
 
+const nowPlaying = document.getElementById("playing");
 socket.on("song", (data) => {
-  console.log(data);
+  nowPlaying.innerText = data;
 });
