@@ -6,25 +6,25 @@ export interface IAudioStream {
 }
 
 export const streamFactory = (cb: (data: string) => void) => {
-  const st = spawn("mpg123", [configManager.getStreamUrl()], {
-    stdio: "pipe",
-  });
+  const st = spawn("mpg123", [configManager.getStreamUrl()]);
 
-  const listen = (data: string) => {
-    if (data.indexOf("StreamTitle") >= 0) {
-      const titleSegment = data.split(";")[0];
+  const listen = (data) => {
+    const sData = data.toString();
+    if (sData.indexOf("StreamTitle=") >= 0) {
+      const titleSegment = sData.split(";")[0];
       const sIndex = titleSegment.indexOf("'");
-      const lIndex = titleSegment.indexOf("'");
+      const lIndex = titleSegment.lastIndexOf("'");
 
-      cb(titleSegment.substring(sIndex, lIndex));
+      const result = titleSegment.substring(sIndex + 1, lIndex);
+
+      cb(result);
     }
   };
 
-  process.stdout.on("data", listen);
+  st.stderr.on("data", listen);
 
   return {
     close: () => {
-      process.stdout.removeListener("data", listen);
       st.kill();
     },
   };
