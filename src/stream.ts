@@ -6,15 +6,26 @@ export interface IAudioStream {
 }
 
 export const streamFactory = (cb: (data: string) => void) => {
-  const st = spawn("mpg123", [configManager.getStreamUrl()]);
+  try {
+    const st = spawn("mpg123", [configManager.getStreamUrl()]);
 
-  st.stdout.on("data", (data) => {
-    cb(data);
-  });
+    st.stdout.pipe(process.stdout)
 
-  return {
-    close: () => {
-      st.kill();
-    },
-  };
+    st.stdout.on("data", (data) => {
+      console.log(data);
+      // cb(data);
+    });
+
+    return {
+      close: () => {
+        try {
+          st.kill("SIGINT");
+        } catch(e) {
+          console.log(e);
+        }
+      },
+    };
+  } catch (e) {
+    console.log(e);
+  }
 };

@@ -146,7 +146,7 @@ export const startServer = (
   // Passing callback for socket data events
   logic.setStreamDataCallback((data) => {
     clients.forEach((client) => {
-      client.emit(data);
+      client.emit("song",data);
     });
   });
 };
