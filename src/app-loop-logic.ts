@@ -134,10 +134,6 @@ export const appLogicFactory = async (
       },
       setStreamDataCallback: (cb) => {
         streamDataCallback = cb;
-
-        setInterval(() => {
-          cb(Math.random().toFixed(6));
-        }, 1000);
       },
     };
   } catch (e) {
