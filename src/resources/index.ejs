@@ -81,23 +81,48 @@
           </label>
         </div>
         <div id="notification" class="alert notification" role="alert">Updated!</div>
-        <form 
-          id="config-form" 
-          ref="config-form" 
-          action="/update" 
-          method="POST" 
-          encType="multipart/form-data">
+        <form id="addStreamForm" method="POST" action="add" onsubmit="return onAddStream();">
           <div class="form-group">
-            <label for="streamUrl">Stream URL</label>
-            <input
-              name="url"
-              value="<%= url %>"
-              type="text"
-              class="form-control"
-              id="streamUrl"
-              placeholder="https://some-stream"
-            />
-            <small class="form-text text-muted">Need to toggle off/on to take effect.</small>
+              <label for="selectedStream">Active Stream</label>
+              <select class="form-control" id="activeStream">
+                <% for(var i=0; i < streams.length; i++) { %>
+                  <option 
+                    value=<%= streams[i].id %>
+                    <% if(activeStreamId === streams[i].id) { %>
+                      selected
+                    <% } %>
+                    >
+                    <%= streams[i].name %>
+                  </option>
+                <% } %>  
+              </select>
+          </div>
+          <div class="form-group">
+            <div class="row">
+              <div class="col">
+                <label for="streamUrl">Name</label>
+                <input
+                  name="name"
+                  value=""
+                  type="text"
+                  class="form-control"
+                  id="streamName"
+                  placeholder="some stream"
+                />
+              </div>
+              <div class="col">
+                <label for="streamUrl">Stream URL</label>
+                <input
+                  name="url"
+                  value=""
+                  type="text"
+                  class="form-control"
+                  id="streamUrl"
+                  placeholder="https://some-stream"
+                />
+              </div>
+            </div>
+            <button id="addStream" type="submit" class="btn btn-primary btn-block mt-4">Add</button>
           </div>
           <div class="form-group">
             <label for="maxVol" id="maxVolLabel">Max Volume</label>
@@ -133,10 +158,6 @@
               step="1"
               value="<%= step %>">
           </div>
-          <small class="form-text text-muted">Volumes are applied immediately.</small>
-          <button type="submit" class="btn btn-block btn-primary mt-2">
-            Update
-          </button>
         </form>
       </div>
     </div>

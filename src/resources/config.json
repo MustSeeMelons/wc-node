@@ -1,1 +1,1 @@
-{"isStream":true,"streamUrl":"http://ice1.somafm.com/u80s-128-mp3","fileName":"nero.mp3","minVolume":30,"maxVolume":77,"volStep":9,"isActive":true,"isSonarDisabled":true}
+{"activeStreamId":"","streams":[{"id":"800d0fb5-3937-4d6a-9878-8473b17390f8","name":"Underground 80's","url":"http://ice1.somafm.com/u80s-128-mp3"},{"id":"466254b2-5adc-46f0-97d8-8d8067a1cae9","name":"Space","url":"http://ice6.somafm.com/deepspaceone-128-mp3"}],"minVolume":30,"maxVolume":77,"volStep":9,"isActive":false,"isSonarDisabled":true}

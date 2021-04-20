@@ -6,8 +6,8 @@ const maxVolLabel = document.getElementById("maxVolLabel");
 const minVolLabel = document.getElementById("minVolLabel");
 const volStepLabel = document.getElementById("volStepLabel");
 
-const onButton = document.getElementById("on");
-const offButton = document.getElementById("off");
+const playButton = document.getElementById("on");
+const pauseButton = document.getElementById("off");
 
 const sonarOnButton = document.getElementById("sonarOn");
 const sonarOffButton = document.getElementById("sonarOff");
@@ -124,11 +124,11 @@ volStep.addEventListener("change", (e) => {
   applyVolume("step", val);
 });
 
-onButton.addEventListener("click", () => {
+playButton.addEventListener("click", () => {
   toggleState(true);
 });
 
-offButton.addEventListener("click", () => {
+pauseButton.addEventListener("click", () => {
   toggleState(false);
 });
 
@@ -173,4 +173,31 @@ var socket = io();
 const nowPlaying = document.getElementById("playing");
 socket.on("song", (data) => {
   nowPlaying.innerText = data;
+});
+
+const onAddStream = () => {
+  const name = document.getElementById("streamName").value;
+  const url = document.getElementById("streamName").value;
+
+  if (name && url) {
+    return true;
+  } else {
+    showNotification("Invalid input!", ["alert-danger"]);
+    return false;
+  }
+};
+
+const streamSelect = document.getElementById("activeStream");
+streamSelect.addEventListener("change", (event) => {
+  fetch("active", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id: event.target.value,
+    }),
+  })
+    .then(simpleHandler())
+    .catch(errHandler);
 });

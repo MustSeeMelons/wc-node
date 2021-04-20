@@ -7,7 +7,6 @@
 
 # TODO
 
-- Currently playing song
 - List of stream urls
 
 # If Bored

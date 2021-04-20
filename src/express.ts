@@ -38,7 +38,8 @@ export const startServer = (
     req: Request,
     res: Response
   ) => {
-    const url = configManager.getStreamUrl();
+    const activeStreamId = configManager.getActiveStreamId();
+    const streams = configManager.getStreamUrls();
     const min = configManager.getMinVolume();
     const max = configManager.getMaxVolume();
     const step = configManager.getVolStep();
@@ -48,7 +49,8 @@ export const startServer = (
     const audioFiles = readdirSync(path.join(__dirname, "/resources/audio"));
 
     res.render("index", {
-      url,
+      activeStreamId,
+      streams,
       success: success,
       audioFiles,
       min,
@@ -66,16 +68,30 @@ export const startServer = (
   app.get("/success", postHandler("true"));
   app.get("/fail", postHandler("false"));
 
-  app.post("/update", async (req, res) => {
+  app.post("/add", async (req, res) => {
+    const name = req.body["name"];
     const url = req.body["url"];
 
-    url && configManager.setStreamUrl(url);
+    const exists = configManager.getStreamUrls().some((stream) => {
+      return stream.name === name || stream.url === url;
+    });
 
-    if (url) {
+    if (!exists) {
+      configManager.addStreamUrl(name, url);
       res.redirect("/#success");
     } else {
       res.redirect("/#fail");
     }
+  });
+
+  app.post("/active", async (req, res) => {
+    const id = req.body["id"];
+
+    configManager.setActiveStreamId(id);
+    await logic.stopAudio();
+    await logic.playAudio();
+
+    res.sendStatus(200);
   });
 
   app.post("/volume", (req, res) => {
@@ -144,9 +160,10 @@ export const startServer = (
   });
 
   // Passing callback for socket data events
-  logic.setStreamDataCallback((data) => {
-    clients.forEach((client) => {
-      client.emit("song",data);
+  logic &&
+    logic.setStreamDataCallback((data) => {
+      clients.forEach((client) => {
+        client.emit("song", data);
+      });
     });
-  });
 };
