@@ -17,13 +17,13 @@ import { configManager } from "./config-manager";
     const appLogic = await appLogicFactory(sonar, audio);
 
     startServer(audio, appLogic);
-    // startServer();
     console.log("Started..");
 
     while (true) {
       if (!configManager.isSonarDisabled()) {
         await appLogic.stateTick();
       } else {
+        // Sonar will eat up all cycles if you let it
         await wait(100);
       }
       await wait(100);

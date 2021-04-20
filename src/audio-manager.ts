@@ -42,9 +42,7 @@ export const fadeOutAudio = async () => {
   }
 };
 
-export const audioManagerFactory = async (): Promise<
-  IAudioManager | undefined
-> => {
+export const audioManagerFactory = async (): Promise<IAudioManager> => {
   try {
     return {
       setVolume: (volume: number) => {

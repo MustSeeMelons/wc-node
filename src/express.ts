@@ -12,11 +12,9 @@ const { exec } = require("child_process");
 const PORT = 8080;
 
 let clients: Socket[] = [];
+let currSong = "";
 
-export const startServer = (
-  audio: IAudioManager = undefined,
-  logic: IAppLogic = undefined
-) => {
+export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
   const up = dateToString();
   const app: Application = express();
 
@@ -97,12 +95,16 @@ export const startServer = (
     res.sendStatus(200);
   });
 
-  app.post("/delete", (req, res) => {
+  app.post("/delete", async (req, res) => {
     const id = req.body["id"];
     configManager.removeStreamUrl(id);
     const stream = configManager.getStreamUrls()[0];
     if (stream) {
-      configManager.setActiveStreamId(stream.id);
+      if (configManager.isActive()) {
+        await logic.stopAudio();
+        configManager.setActiveStreamId(stream.id);
+        await logic.playAudio();
+      }
     } else {
       configManager.setActiveStreamId("");
     }
@@ -169,6 +171,8 @@ export const startServer = (
     socket.on("disconnect", () => {
       clients = clients.filter((c) => c !== socket);
     });
+
+    socket.emit("song", currSong);
   });
 
   httpServer.listen(PORT, () => {
@@ -178,6 +182,7 @@ export const startServer = (
   // Passing callback for socket data events
   logic &&
     logic.setStreamDataCallback((data) => {
+      currSong = data;
       clients.forEach((client) => {
         client.emit("song", data);
       });

@@ -5,17 +5,15 @@
 - `sudo apt-get install -y mpg123`
 - `sudo npm start`
 
-# TODO
-
-- Tidy up the shizz
-
 # If Bored
 
 - Override hardrware toggle button (ordered, on the way)
 
-# Nopetown
+# Perhaps one day
 
-- `say` zero cannot handle this - gets killed
+- Lock UI while waiting for response
+- Indicate if ICY meta is not provided
+- Show message if selected URL cannot be played for some reason
 
 # Systemd
 

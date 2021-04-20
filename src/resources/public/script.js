@@ -173,7 +173,9 @@ var socket = io();
 
 const nowPlaying = document.getElementById("playing");
 socket.on("song", (data) => {
-  nowPlaying.innerText = data;
+  if (data) {
+    nowPlaying.innerText = data;
+  }
 });
 
 const onAddStream = () => {
