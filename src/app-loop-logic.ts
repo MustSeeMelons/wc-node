@@ -34,7 +34,7 @@ export const appLogicFactory = async (
 ): Promise<IAppLogic | undefined> => {
   try {
     await setVolume(configManager.getMinVolume());
-    let stream: IAudioStream;
+    let stream: IAudioStream | undefined;
     const led = new Gpio(PIN_LED, { mode: Gpio.OUTPUT });
 
     let isLedOn = false;

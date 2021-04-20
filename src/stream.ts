@@ -17,6 +17,12 @@ export const streamFactory = (cb: (data: string) => void) => {
   const stream = configManager
     .getStreamUrls()
     .find((stream) => stream.id === id);
+
+  // Return nothing we we have nothing
+  if (!stream) {
+    return;
+  }
+
   const st = spawn("mpg123", [stream.url]);
 
   const listen = (data) => {

@@ -100,6 +100,13 @@ export const startServer = (
   app.post("/delete", (req, res) => {
     const id = req.body["id"];
     configManager.removeStreamUrl(id);
+    const stream = configManager.getStreamUrls()[0];
+    if (stream) {
+      configManager.setActiveStreamId(stream.id);
+    } else {
+      configManager.setActiveStreamId("");
+    }
+
     res.redirect("/#success");
   });
 

@@ -7,7 +7,7 @@
 
 # TODO
 
-- List of stream urls
+- Tidy up the shizz
 
 # If Bored
 
