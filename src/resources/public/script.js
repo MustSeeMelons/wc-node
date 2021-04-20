@@ -130,6 +130,7 @@ playButton.addEventListener("click", () => {
 
 pauseButton.addEventListener("click", () => {
   toggleState(false);
+  nowPlaying.innerText = "..silence..";
 });
 
 sonarOnButton.addEventListener("click", () => {
@@ -196,6 +197,21 @@ streamSelect.addEventListener("change", (event) => {
     },
     body: JSON.stringify({
       id: event.target.value,
+    }),
+  })
+    .then(simpleHandler())
+    .catch(errHandler);
+});
+
+const deleteStream = document.getElementById("deleteStream");
+deleteStream.addEventListener("click", () => {
+  fetch("delete", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id: streamSelect.value,
     }),
   })
     .then(simpleHandler())

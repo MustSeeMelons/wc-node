@@ -88,10 +88,19 @@ export const startServer = (
     const id = req.body["id"];
 
     configManager.setActiveStreamId(id);
-    await logic.stopAudio();
-    await logic.playAudio();
+
+    if (configManager.isActive()) {
+      await logic.stopAudio();
+      await logic.playAudio();
+    }
 
     res.sendStatus(200);
+  });
+
+  app.post("/delete", (req, res) => {
+    const id = req.body["id"];
+    configManager.removeStreamUrl(id);
+    res.redirect("/#success");
   });
 
   app.post("/volume", (req, res) => {
