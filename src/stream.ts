@@ -6,7 +6,18 @@ export interface IAudioStream {
 }
 
 export const streamFactory = (cb: (data: string) => void) => {
-  const st = spawn("mpg123", [configManager.getStreamUrl()]);
+  let id = configManager.getActiveStreamId();
+
+  if (!id) {
+    const stream = configManager.getStreamUrls()[0];
+    id = stream.id;
+    configManager.setActiveStreamId(id);
+  }
+
+  const stream = configManager
+    .getStreamUrls()
+    .find((stream) => stream.id === id);
+  const st = spawn("mpg123", [stream.url]);
 
   const listen = (data) => {
     const sData = data.toString();
