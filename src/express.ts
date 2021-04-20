@@ -44,13 +44,10 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
     const isActive = configManager.isActive();
     const isSonarDisabled = configManager.isSonarDisabled();
 
-    const audioFiles = readdirSync(path.join(__dirname, "/resources/audio"));
-
     res.render("index", {
       activeStreamId,
       streams,
       success: success,
-      audioFiles,
       min,
       max,
       step,
