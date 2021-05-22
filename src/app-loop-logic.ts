@@ -42,7 +42,7 @@ export const appLogicFactory = async (
     let sonarState = SonarState.OnTrigger;
 
     const setLedState = (value: boolean) => {
-      led.digitalWrite(value);
+      led.digitalWrite(value ? 1 : 0);
       isLedOn = value;
     };
 
