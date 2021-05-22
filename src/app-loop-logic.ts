@@ -9,7 +9,7 @@ import { wait } from "./utils";
 const PIN_LED = 23;
 const TRIGGER_DIST = 50;
 const TRIGGER_END_DIST = TRIGGER_DIST * 2;
-const SAMPLE_COUNT = 3;
+const SAMPLE_COUNT = 1;
 
 export enum SonarState {
   OnTrigger = "OnTrigger",
@@ -41,9 +41,9 @@ export const appLogicFactory = async (
     led.digitalWrite(0);
     let sonarState = SonarState.OnTrigger;
 
-    const toggleLed = () => {
-      led.digitalWrite(isLedOn ? 0 : 1);
-      isLedOn = !isLedOn;
+    const setLedState = (value: boolean) => {
+      led.digitalWrite(value);
+      isLedOn = value;
     };
 
     const median = (arr: number[]) => {
@@ -65,7 +65,7 @@ export const appLogicFactory = async (
     };
 
     const playAudio = async () => {
-      toggleLed();
+      setLedState(true);
       if (stream) {
         stream.close();
       }
@@ -77,7 +77,7 @@ export const appLogicFactory = async (
     const stopAudio = async () => {
       await fadeOutAudio();
       stream && stream.close();
-      toggleLed();
+      setLedState(false);
     };
 
     const stateTick = async () => {
@@ -106,7 +106,7 @@ export const appLogicFactory = async (
           }
           break;
         case SonarState.OnTriggerEnd:
-          if (dist > TRIGGER_END_DIST) {
+          if (dist > TRIGGER_DIST) {
             sonarState = SonarState.OffTrigger;
           }
           break;
@@ -118,7 +118,7 @@ export const appLogicFactory = async (
           }
           break;
         case SonarState.OffTriggerEnd:
-          if (dist > TRIGGER_END_DIST) {
+          if (dist > TRIGGER_DIST) {
             sonarState = SonarState.OnTrigger;
           }
           break;

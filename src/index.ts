@@ -24,9 +24,9 @@ import { configManager } from "./config-manager";
         await appLogic.stateTick();
       } else {
         // Sonar will eat up all cycles if you let it
-        await wait(100);
+        await wait(50);
       }
-      await wait(100);
+      await wait(50);
     }
   } catch (e) {
     console.log("Failed..");
