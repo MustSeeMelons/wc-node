@@ -71,6 +71,13 @@ export const appLogicFactory = async (
       }
 
       stream = streamFactory(streamDataCallback);
+
+      // The stream might not start immediately, wait a little
+      // Otherwise it can start at full volume which is not that nice
+      await new Promise<void>((resolve) => {
+        setTimeout(() => resolve(), 1500);
+      });
+
       await fadeInAudio();
     };
 

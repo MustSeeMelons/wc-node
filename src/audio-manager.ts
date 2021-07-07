@@ -33,7 +33,7 @@ export const fadeInAudio = async () => {
 
 export const fadeOutAudio = async () => {
   for (
-    let i = configManager.getMaxVolume();
+    let i = configManager.getMaxVolume() - 1;
     i >= configManager.getMinVolume();
     i -= configManager.getVolStep()
   ) {
