@@ -8,8 +8,7 @@ import { wait } from "./utils";
 
 const PIN_LED = 23;
 const TRIGGER_DIST = 50;
-const TRIGGER_END_DIST = TRIGGER_DIST * 2;
-const SAMPLE_COUNT = 1;
+const SAMPLE_COUNT = 2;
 
 export enum SonarState {
   OnTrigger = "OnTrigger",
@@ -82,9 +81,9 @@ export const appLogicFactory = async (
     };
 
     const stopAudio = async () => {
+      setLedState(false);
       await fadeOutAudio();
       stream && stream.close();
-      setLedState(false);
     };
 
     const stateTick = async () => {
@@ -95,7 +94,7 @@ export const appLogicFactory = async (
           samples.push(dist);
         }
         // From the sonar spec, 60ms between reads
-        await wait(50);
+        await wait(60);
       }
 
       if (samples.length === 0) {
