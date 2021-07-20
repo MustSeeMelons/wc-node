@@ -33,6 +33,7 @@ export const appLogicFactory = async (
 ): Promise<IAppLogic | undefined> => {
   try {
     await setVolume(configManager.getMinVolume());
+
     let stream: IAudioStream | undefined;
     const led = new Gpio(PIN_LED, { mode: Gpio.OUTPUT });
 
@@ -78,12 +79,16 @@ export const appLogicFactory = async (
       });
 
       await fadeInAudio();
+
+      sonarState = SonarState.OffTrigger;
     };
 
     const stopAudio = async () => {
       setLedState(false);
       await fadeOutAudio();
       stream && stream.close();
+
+      sonarState = SonarState.OnTrigger;
     };
 
     const stateTick = async () => {

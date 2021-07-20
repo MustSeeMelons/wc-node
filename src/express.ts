@@ -133,6 +133,7 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
 
   app.post("/state", (req, res) => {
     const value = !!req.body["value"];
+    
     configManager.setActive(value);
 
     if (value) {
