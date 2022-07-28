@@ -5,6 +5,8 @@ import { startServer } from "./express";
 import { sonarFactory } from "./sonar";
 import { audioManagerFactory } from "./audio-manager";
 import { configManager } from "./config-manager";
+import { setupPowerButton } from "./power";
+import { setupRotary } from "./rotary";
 
 (async () => {
   // Fix ALSA audio isses caused by pigpio
@@ -14,6 +16,8 @@ import { configManager } from "./config-manager";
     console.log("Starting..");
     const sonar = await sonarFactory();
     const audio = await audioManagerFactory();
+    setupRotary();
+    setupPowerButton();
     const appLogic = await appLogicFactory(sonar, audio);
 
     startServer(audio, appLogic);

@@ -108,7 +108,7 @@ export const appLogicFactory = async (
 
       const dist = filter(samples);
 
-      switch (sonarState) {
+      switch (p) {
         case SonarState.OnTrigger:
           if (dist < TRIGGER_DIST) {
             sonarState = SonarState.OnTriggerEnd;
