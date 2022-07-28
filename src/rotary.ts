@@ -20,7 +20,7 @@ const counterClockwise = () => {
 
 const aLead = new Gpio(PIN_A, {
   mode: Gpio.INPUT,
-  pullUpDown: Gpio.PUD_DOWN,
+  pullUpDown: Gpio.PUD_UP,
   edge: Gpio.EITHER_EDGE,
 });
 
@@ -84,12 +84,11 @@ const doEncoder = () => {
 
 // XXX pass in audio change funciton
 export const setupRotary = () => {
-  console.log("setting up rotary");
-  aLead.addListener("interrupt", () => {
+  aLead.on("interrupt", () => {
     doEncoder();
   });
 
-  bLead.addListener("interrupt", () => {
+  bLead.on("interrupt", () => {
     doEncoder();
   });
 };

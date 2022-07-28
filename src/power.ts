@@ -10,7 +10,6 @@ const button = new Gpio(PIN, {
 
 // XXX pass in audio toggle function
 export const setupPowerButton = () => {
-  console.log("setting up power button");
   button.on("interrupt", (level) => {
     console.log("btn!");
   });
