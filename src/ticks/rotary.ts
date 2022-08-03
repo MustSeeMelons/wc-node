@@ -1,4 +1,5 @@
 import { Gpio } from "pigpio";
+import { ITick } from "./tick";
 
 const PIN_A = 25;
 const PIN_B = 24;
@@ -82,13 +83,10 @@ const doEncoder = () => {
   lastB = b;
 };
 
-// XXX pass in audio change funciton
-export const setupRotary = () => {
-  aLead.on("interrupt", () => {
-    doEncoder();
-  });
-
-  bLead.on("interrupt", () => {
-    doEncoder();
-  });
+export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
+  return {
+    tick: () => {
+      doEncoder();
+    },
+  };
 };
