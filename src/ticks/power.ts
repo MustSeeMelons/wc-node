@@ -1,7 +1,7 @@
 import { Gpio } from "pigpio";
 import { ITick } from "./tick";
 
-const PIN = 22;
+const PIN = 4;
 
 const button = new Gpio(PIN, {
   mode: Gpio.INPUT,

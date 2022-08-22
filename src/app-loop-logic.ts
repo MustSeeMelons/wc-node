@@ -5,7 +5,7 @@ import { Gpio } from "pigpio";
 import { configManager } from "./config-manager";
 import { wait } from "./utils";
 
-const PIN_LED = 23;
+const PIN_LED = 5;
 
 let isPlaying = false;
 
