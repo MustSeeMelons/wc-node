@@ -1,5 +1,4 @@
 import { appLogicFactory } from "./app-loop-logic";
-import { configureClock, CLOCK_PWM } from "pigpio";
 import { wait } from "./utils";
 import { startServer } from "./express";
 import { audioManagerFactory } from "./audio-manager";
@@ -7,9 +6,6 @@ import { configManager } from "./config-manager";
 import { ITick } from "./ticks/tick";
 import { setupPowerButton } from "./ticks/power";
 import { setupRotary } from "./ticks/rotary";
-
-// Fix ALSA audio isses caused by pigpio
-// configureClock(1, CLOCK_PWM);
 
 (async () => {
   try {

@@ -1,4 +1,4 @@
-import { Gpio } from "pigpio";
+import { Gpio } from "onoff";
 import { ITick } from "./tick";
 
 const PIN_A = 22;
@@ -20,21 +20,13 @@ export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
     console.log(val);
   };
 
-  const aLead = new Gpio(PIN_A, {
-    mode: Gpio.INPUT,
-    pullUpDown: Gpio.PUD_UP,
-    edge: Gpio.EITHER_EDGE,
-  });
+  const aLead = new Gpio(PIN_A, "in", "both");
 
-  const bLead = new Gpio(PIN_B, {
-    mode: Gpio.INPUT,
-    pullUpDown: Gpio.PUD_UP,
-    edge: Gpio.EITHER_EDGE,
-  });
+  const bLead = new Gpio(PIN_B, "in", "both");
 
   const doEncoder = () => {
-    const a = aLead.digitalRead();
-    const b = bLead.digitalRead();
+    const a = aLead.readSync();
+    const b = bLead.readSync();
 
     // Do nothing if any channel is at its default value
     if (lastA == -1 || lastB == -1) {

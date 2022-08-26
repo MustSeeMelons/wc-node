@@ -1,19 +1,14 @@
-import { Gpio } from "pigpio";
+import { Gpio } from "onoff";
 import { ITick } from "./tick";
 
 const PIN = 4;
 
-const button = new Gpio(PIN, {
-  mode: Gpio.INPUT,
-  pullUpDown: Gpio.PUD_DOWN,
-  edge: Gpio.EITHER_EDGE,
-  alert: true,
-});
+const button = new Gpio(PIN, "in", "both", { debounceTimeout: 100 });
 
 let currState = 0;
 
 export const setupPowerButton = (toggleAudio: () => void): ITick => {
-  button.on("alert", (level) => {
+  button.watch((err, level) => {
     if (currState !== level) {
       toggleAudio();
       currState = level;
