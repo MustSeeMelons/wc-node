@@ -76,6 +76,9 @@ export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
     lastB = b;
   };
 
+  aLead.watch(() => doEncoder());
+  bLead.watch(() => doEncoder());
+
   return {
     tick: () => {
       doEncoder();
