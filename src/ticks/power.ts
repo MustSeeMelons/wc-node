@@ -7,19 +7,20 @@ const button = new Gpio(PIN, {
   mode: Gpio.INPUT,
   pullUpDown: Gpio.PUD_DOWN,
   edge: Gpio.EITHER_EDGE,
+  alert: true,
 });
 
 let currState = 0;
 
 export const setupPowerButton = (toggleAudio: () => void): ITick => {
-  return {
-    tick: () => {
-      const val = button.digitalRead();
+  button.on("alert", (level) => {
+    if (currState !== level) {
+      toggleAudio();
+      currState = level;
+    }
+  });
 
-      if (currState !== val) {
-        toggleAudio();
-        currState = val;
-      }
-    },
+  return {
+    tick: () => {},
   };
 };

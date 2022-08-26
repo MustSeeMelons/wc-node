@@ -1,5 +1,5 @@
 import { appLogicFactory } from "./app-loop-logic";
-import { configureClock, CLOCK_PWM, CLOCK_PCM, terminate, initialize } from "pigpio";
+import { configureClock, CLOCK_PWM } from "pigpio";
 import { wait } from "./utils";
 import { startServer } from "./express";
 import { audioManagerFactory } from "./audio-manager";
@@ -9,7 +9,7 @@ import { setupPowerButton } from "./ticks/power";
 import { setupRotary } from "./ticks/rotary";
 
 // Fix ALSA audio isses caused by pigpio
-configureClock(2, CLOCK_PWM);
+configureClock(1, CLOCK_PWM);
 
 (async () => {
   try {
@@ -19,13 +19,13 @@ configureClock(2, CLOCK_PWM);
 
     const ticks: ITick[] = [
       setupPowerButton(appLogic.toggleAudio),
-      setupRotary((up) => {
-        if (up) {
-          audio.increaseVolume();
-        } else {
-          audio.decreaseVolume();
-        }
-      }),
+      // setupRotary((up) => {
+      //   if (up) {
+      //     audio.increaseVolume();
+      //   } else {
+      //     audio.decreaseVolume();
+      //   }
+      // }),
     ];
 
     startServer(audio, appLogic);
@@ -34,7 +34,7 @@ configureClock(2, CLOCK_PWM);
     console.log("Started..");
 
     while (true) {
-      for(let t of ticks) {
+      for (let t of ticks) {
         t.tick();
       }
       await wait(20);
