@@ -9,7 +9,7 @@ import { setupPowerButton } from "./ticks/power";
 import { setupRotary } from "./ticks/rotary";
 
 // Fix ALSA audio isses caused by pigpio
-configureClock(1, CLOCK_PWM);
+// configureClock(1, CLOCK_PWM);
 
 (async () => {
   try {
@@ -18,7 +18,7 @@ configureClock(1, CLOCK_PWM);
     const appLogic = await appLogicFactory(audio);
 
     const ticks: ITick[] = [
-      setupPowerButton(appLogic.toggleAudio),
+      // setupPowerButton(appLogic.toggleAudio),
       // setupRotary((up) => {
       //   if (up) {
       //     audio.increaseVolume();
