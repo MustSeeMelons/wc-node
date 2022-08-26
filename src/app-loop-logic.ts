@@ -1,7 +1,7 @@
 import { IAudioManager } from "./audio-manager";
 import { fadeInAudio, fadeOutAudio, setVolume } from "./audio-manager";
 import { IAudioStream, streamFactory } from "./stream";
-import { Gpio } from "pigpio";
+import { Gpio } from "onoff";
 import { configManager } from "./config-manager";
 import { wait } from "./utils";
 
@@ -25,13 +25,13 @@ export const appLogicFactory = async (
     await setVolume(configManager.getMinVolume());
 
     let stream: IAudioStream | undefined;
-    const led = new Gpio(PIN_LED, { mode: Gpio.OUTPUT });
+    const led = new Gpio(PIN_LED, "out");
 
     let isLedOn = false;
-    led.digitalWrite(0);
+    led.writeSync(0);
 
     const setLedState = (value: boolean) => {
-      led.digitalWrite(value ? 1 : 0);
+      led.writeSync(value ? 1 : 0);
       isLedOn = value;
     };
 

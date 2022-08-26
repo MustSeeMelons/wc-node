@@ -1,13 +1,12 @@
 # How to
 
 - `npm i`
-- `sudo apt-get install pigpio`
 - `sudo apt-get install -y mpg123`
 - `sudo npm start`
 
-# If Bored
+# /boot/config.txt
 
-- Override hardrware toggle button (ordered, on the way)
+`gpio=4,22,27=ip`
 
 # Perhaps one day
 
