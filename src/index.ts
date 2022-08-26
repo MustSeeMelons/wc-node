@@ -39,19 +39,3 @@ import { setupRotary } from "./ticks/rotary";
     console.log(e);
   }
 })();
-
-const clinUp = () => {
-  // terminate();
-};
-
-process.on("exit", clinUp);
-
-// Ctrl+c event
-process.on("SIGINT", clinUp);
-
-// Catches "kill pid" (for example: nodemon restart)
-process.on("SIGUSR1", clinUp);
-process.on("SIGUSR2", clinUp);
-
-// Uncaught exceptions
-process.on("uncaughtException", clinUp);

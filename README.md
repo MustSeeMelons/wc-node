@@ -6,7 +6,8 @@
 
 # /boot/config.txt
 
-`gpio=4,22,27=pu`
+`gpio=22,27=pu`
+`gpio=4=pd`
 
 # Perhaps one day
 
