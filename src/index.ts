@@ -2,7 +2,6 @@ import { appLogicFactory } from "./app-loop-logic";
 import { wait } from "./utils";
 import { startServer } from "./express";
 import { audioManagerFactory } from "./audio-manager";
-import { configManager } from "./config-manager";
 import { ITick } from "./ticks/tick";
 import { setupPowerButton } from "./ticks/power";
 import { setupRotary } from "./ticks/rotary";
@@ -14,14 +13,14 @@ import { setupRotary } from "./ticks/rotary";
     const appLogic = await appLogicFactory(audio);
 
     const ticks: ITick[] = [
-      // setupPowerButton(appLogic.toggleAudio),
-      // setupRotary((up) => {
-      //   if (up) {
-      //     audio.increaseVolume();
-      //   } else {
-      //     audio.decreaseVolume();
-      //   }
-      // }),
+      setupPowerButton(appLogic.toggleAudio),
+      setupRotary((up) => {
+        if (up) {
+          audio.increaseVolume();
+        } else {
+          audio.decreaseVolume();
+        }
+      }),
     ];
 
     startServer(audio, appLogic);
