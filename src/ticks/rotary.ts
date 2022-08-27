@@ -10,7 +10,7 @@ let lastA = -1;
 let lastB = -1;
 
 const values = [];
-const valueCount = 7;
+const valueCount = 9;
 
 export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
   const doChange = () => {
@@ -24,10 +24,8 @@ export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
 
     if (upCount > valueCount / 2) {
       changeVolume(true);
-      console.log("up!");
     } else {
       changeVolume(false);
-      console.log("down!");
     }
 
     values.length = 0;

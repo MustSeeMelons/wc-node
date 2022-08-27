@@ -8,9 +8,7 @@ let currState = 0;
 export const setupPowerButton = (toggleAudio: () => void): ITick => {
   const button = new Gpio(PIN, "in", "both", { debounceTimeout: 500 });
 
-  button.watch((err, level) => {
-    console.log(`pwr level: ${level}`);
-
+  button.watch((_err, level) => {
     if (currState !== level) {
       toggleAudio();
       currState = level;
