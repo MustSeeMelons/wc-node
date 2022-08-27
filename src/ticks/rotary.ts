@@ -9,41 +9,44 @@ const DEBOUNCE = 10;
 let lastA = -1;
 let lastB = -1;
 
-let val = 0;
-const changeRange = 5;
+const values = [];
+const valueCount = 9;
 
 export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
-  let upResetHandle;
-  let downResetHandle;
+  const doChange = () => {
+    const upCount = values.reduce((acc, curr) => {
+      if (curr === 1) {
+        return acc + 1;
+      }
 
-  const resetCounter = () => {
-    return setTimeout(() => (val = 0), 2000);
+      return acc;
+    }, 0);
+
+    if (upCount > valueCount / 2) {
+      changeVolume(true);
+      console.log("up!");
+    } else {
+      changeVolume(false);
+      console.log("down!");
+    }
+
+    values.length = 0;
   };
 
   const clockwise = () => {
-    val++;
-
-    upResetHandle && clearTimeout(upResetHandle);
-
-    if (val % changeRange === 0) {
-      console.log("volume up!");
-      changeVolume(true);
+    if (values.length < valueCount) {
+      values.push(1);
+    } else {
+      doChange();
     }
-
-    upResetHandle = resetCounter();
   };
 
   const counterClockwise = () => {
-    val--;
-
-    downResetHandle && clearTimeout(downResetHandle);
-
-    if (val % changeRange === 0) {
-      console.log("volume down!");
-      changeVolume(false);
+    if (values.length < valueCount) {
+      values.push(-1);
+    } else {
+      doChange();
     }
-
-    downResetHandle = resetCounter();
   };
 
   const aLead = new Gpio(PIN_A, "in", "both", { debounceTimeout: DEBOUNCE });
