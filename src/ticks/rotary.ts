@@ -10,7 +10,7 @@ let lastA = -1;
 let lastB = -1;
 
 let val = 0;
-const changeRange = 10;
+const changeRange = 5;
 
 export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
   let upResetHandle;
@@ -26,6 +26,7 @@ export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
     upResetHandle && clearTimeout(upResetHandle);
 
     if (val % changeRange === 0) {
+      console.log("volume up!");
       changeVolume(true);
     }
 
@@ -38,6 +39,7 @@ export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
     downResetHandle && clearTimeout(downResetHandle);
 
     if (val % changeRange === 0) {
+      console.log("volume down!");
       changeVolume(false);
     }
 
