@@ -4,7 +4,7 @@ import { ITick } from "./tick";
 const PIN_A = 22;
 const PIN_B = 27;
 
-const DEBOUNCE = 50;
+const DEBOUNCE = 10;
 
 let lastA = -1;
 let lastB = -1;
