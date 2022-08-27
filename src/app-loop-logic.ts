@@ -14,6 +14,7 @@ export interface IAppLogic {
   stopAudio: () => Promise<void>;
   toggleAudio: () => void;
   setStreamDataCallback: (cb: (data: string) => void) => void;
+  isPlaying: () => boolean;
 }
 
 let streamDataCallback: (data: string) => void;
@@ -75,6 +76,7 @@ export const appLogicFactory = async (
       setStreamDataCallback: (cb) => {
         streamDataCallback = cb;
       },
+      isPlaying: () => isPlaying,
     };
   } catch (e) {
     console.error(e);

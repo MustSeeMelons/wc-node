@@ -15,10 +15,12 @@ import { setupRotary } from "./ticks/rotary";
     const ticks: ITick[] = [
       setupPowerButton(appLogic.toggleAudio),
       setupRotary((up) => {
-        if (up) {
-          audio.increaseVolume();
-        } else {
-          audio.decreaseVolume();
+        if (appLogic.isPlaying()) {
+          if (up) {
+            audio.increaseVolume();
+          } else {
+            audio.decreaseVolume();
+          }
         }
       }),
     ];
