@@ -3,6 +3,7 @@ import { configManager } from "./config-manager";
 const { spawn } = require("child_process");
 
 const VOL_WAIT = 125;
+const VOL_CHANGE_AMOUNT = 3;
 
 let currVolume = configManager.getMaxVolume();
 
@@ -53,14 +54,14 @@ export const audioManagerFactory = async (): Promise<IAudioManager> => {
         setVolume(volume);
       },
       increaseVolume: () => {
-        currVolume += 1;
+        currVolume += VOL_CHANGE_AMOUNT;
         currVolume %= 100;
         configManager.setMaxVolume(currVolume);
 
         setVolume(currVolume);
       },
       decreaseVolume: () => {
-        currVolume -= 1;
+        currVolume -= VOL_CHANGE_AMOUNT;
         if (currVolume < configManager.getMinVolume()) {
           currVolume = configManager.getMinVolume();
         }

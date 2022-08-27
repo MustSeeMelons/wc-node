@@ -10,7 +10,7 @@ let lastA = -1;
 let lastB = -1;
 
 const values = [];
-const valueCount = 9;
+const valueCount = 7;
 
 export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
   const doChange = () => {
