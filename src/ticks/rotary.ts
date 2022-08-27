@@ -4,6 +4,8 @@ import { ITick } from "./tick";
 const PIN_A = 22;
 const PIN_B = 27;
 
+const DEBOUNCE = 50;
+
 let lastA = -1;
 let lastB = -1;
 
@@ -20,9 +22,9 @@ export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
     console.log(val);
   };
 
-  const aLead = new Gpio(PIN_A, "in", "both");
+  const aLead = new Gpio(PIN_A, "in", "both", { debounceTimeout: DEBOUNCE });
 
-  const bLead = new Gpio(PIN_B, "in", "both");
+  const bLead = new Gpio(PIN_B, "in", "both", { debounceTimeout: DEBOUNCE });
 
   const doEncoder = () => {
     const a = aLead.readSync();
