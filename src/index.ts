@@ -29,6 +29,8 @@ import { setupRotary } from "./ticks/rotary";
 
     await wait(2000);
     console.log("Started..");
+
+    ticks.forEach((t) => t.tick());
   } catch (e) {
     console.log("Failed..");
     console.log(e);

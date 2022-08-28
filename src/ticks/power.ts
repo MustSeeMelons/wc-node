@@ -6,7 +6,7 @@ const PIN = 4;
 let currState = 0;
 
 export const setupPowerButton = (toggleAudio: () => void): ITick => {
-  const button = new Gpio(PIN, "in", "both", { debounceTimeout: 500 });
+  const button = new Gpio(PIN, "in", "both", { debounceTimeout: 400 });
 
   button.watch((_err, level) => {
     console.log(`power toggle - ${level}`);

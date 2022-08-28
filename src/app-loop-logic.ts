@@ -37,6 +37,7 @@ export const appLogicFactory = async (
     };
 
     const playAudio = async () => {
+      isPlaying = true;
       setLedState(true);
       if (stream) {
         stream.close();
@@ -55,6 +56,7 @@ export const appLogicFactory = async (
 
     const stopAudio = async () => {
       setLedState(false);
+      isPlaying = false;
       await fadeOutAudio();
       stream && stream.close();
     };
@@ -62,10 +64,8 @@ export const appLogicFactory = async (
     const toggleAudio = () => {
       if (isPlaying) {
         stopAudio();
-        isPlaying = false;
       } else {
         playAudio();
-        isPlaying = true;
       }
     };
 
