@@ -24,8 +24,10 @@ export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
 
     if (upCount > valueCount / 2) {
       changeVolume(true);
+      console.log("volume up");
     } else {
       changeVolume(false);
+      console.log("volume down");
     }
 
     values.length = 0;
@@ -34,6 +36,7 @@ export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
   const clockwise = () => {
     if (values.length < valueCount) {
       values.push(1);
+      console.log("1 push");
     } else {
       doChange();
     }
@@ -42,6 +45,7 @@ export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
   const counterClockwise = () => {
     if (values.length < valueCount) {
       values.push(-1);
+      console.log("-1 push");
     } else {
       doChange();
     }
