@@ -136,7 +136,7 @@ export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
       clockwise();
       readIndex = newIndex;
     } else if (
-      newIndex > readIndex ||
+      newIndex < readIndex ||
       (newIndex === validReads.length - 1 && readIndex === 0)
     ) {
       counterClockwise();
