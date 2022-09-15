@@ -27,7 +27,6 @@ import { setupRotary } from "./ticks/rotary";
 
     startServer(audio, appLogic);
 
-    await wait(2000);
     console.log("Started..");
 
     ticks.forEach((t) => t.tick());

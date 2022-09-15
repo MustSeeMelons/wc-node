@@ -71,6 +71,8 @@ export const audioManagerFactory = async (): Promise<IAudioManager> => {
           currVolume = configManager.getMinVolume();
         }
 
+        configManager.setMaxVolume(currVolume);
+
         setVolume(currVolume);
       },
     };

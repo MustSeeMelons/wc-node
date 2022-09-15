@@ -9,17 +9,6 @@ const DEBOUNCE = 10;
 let lastA = -1;
 let lastB = -1;
 
-type ValidRead = [number, number];
-
-const validReads: ValidRead[] = [
-  [1, 1],
-  [1, 0],
-  [0, 0],
-  [0, 1],
-];
-
-let readIndex = -1;
-
 const values = [];
 const valueCount = 9;
 
@@ -47,7 +36,6 @@ export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
   const clockwise = () => {
     if (values.length < valueCount) {
       values.push(1);
-      console.log("1 push");
     } else {
       doChange();
     }
@@ -56,7 +44,6 @@ export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
   const counterClockwise = () => {
     if (values.length < valueCount) {
       values.push(-1);
-      console.log("-1 push");
     } else {
       doChange();
     }
@@ -116,36 +103,6 @@ export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
 
     lastA = a;
     lastB = b;
-  };
-
-  const doNewEncoder = () => {
-    const a = aLead.readSync();
-    const b = bLead.readSync();
-
-    if (readIndex === -1) {
-      readIndex = validReads.findIndex((v) => v[0] === a && v[1] === b);
-      return;
-    }
-
-    const newIndex = validReads.findIndex((v) => v[0] === a && v[1] === b);
-
-    console.log(`value: ${a}-${b}`);
-    console.log(`readIndex: ${readIndex}`);
-    console.log(`newIndex: ${newIndex}`);
-
-    if (
-      newIndex > readIndex ||
-      (newIndex === 0 && readIndex === validReads.length - 1)
-    ) {
-      clockwise();
-      readIndex = newIndex;
-    } else if (
-      newIndex < readIndex ||
-      (newIndex === validReads.length - 1 && readIndex === 0)
-    ) {
-      counterClockwise();
-      readIndex = newIndex;
-    }
   };
 
   aLead.watch(() => doOldEncoder());
