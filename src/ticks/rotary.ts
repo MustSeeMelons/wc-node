@@ -129,6 +129,10 @@ export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
 
     const newIndex = validReads.findIndex((v) => v[0] === a && v[1] === b);
 
+    console.log(`value: ${v[0]}-${v[1]}`);
+    console.log(`readIndex: ${readIndex}`);
+    console.log(`newIndex: ${newIndex}`);
+
     if (
       newIndex > readIndex ||
       (newIndex === 0 && readIndex === validReads.length - 1)
