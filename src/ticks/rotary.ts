@@ -4,7 +4,7 @@ import { ITick } from "./tick";
 const PIN_A = 22;
 const PIN_B = 27;
 
-const DEBOUNCE = 20;
+const DEBOUNCE = 5;
 
 let lastA = -1;
 let lastB = -1;
@@ -55,15 +55,9 @@ export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
 
   const bLead = new Gpio(PIN_B, "in", "both", { debounceTimeout: DEBOUNCE });
 
-  const doEncoder = (readA: boolean) => {
-    let a = lastA;
-    let b = lastB;
-
-    if (readA) {
-      a = aLead.readSync();
-    } else {
-      b = bLead.readSync();
-    }
+  const doEncoder = () => {
+    const a = aLead.readSync();
+    const b = bLead.readSync();
 
     // Do nothing if any channel is at its default value
     if (lastA == -1 || lastB == -1) {
@@ -113,8 +107,8 @@ export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
     lastB = b;
   };
 
-  aLead.watch(() => doEncoder(true));
-  bLead.watch(() => doEncoder(false));
+  aLead.watch(() => doEncoder());
+  bLead.watch(() => doEncoder());
 
   return {
     tick: () => {},
