@@ -3,6 +3,7 @@
 - `npm i`
 - `sudo apt-get install -y mpg123`
 - `sudo npm start`
+- `/etc/systemd/ateja.service`
 
 # /boot/config.txt
 
