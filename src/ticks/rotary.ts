@@ -4,10 +4,21 @@ import { ITick } from "./tick";
 const PIN_A = 22;
 const PIN_B = 27;
 
-const DEBOUNCE = 50;
+const DEBOUNCE = 10;
 
 let lastA = -1;
 let lastB = -1;
+
+type ValidRead = [number, number];
+
+const validReads: ValidRead[] = [
+  [1, 1],
+  [1, 0],
+  [0, 0],
+  [0, 1],
+];
+
+let readIndex = -1;
 
 const values = [];
 const valueCount = 9;
@@ -55,7 +66,7 @@ export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
 
   const bLead = new Gpio(PIN_B, "in", "both", { debounceTimeout: DEBOUNCE });
 
-  const doEncoder = () => {
+  const doOldEncoder = () => {
     const a = aLead.readSync();
     const b = bLead.readSync();
 
@@ -107,8 +118,34 @@ export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
     lastB = b;
   };
 
-  aLead.watch(() => doEncoder());
-  bLead.watch(() => doEncoder());
+  const doNewEncoder = () => {
+    const a = aLead.readSync();
+    const b = bLead.readSync();
+
+    if (readIndex === -1) {
+      readIndex = validReads.findIndex((v) => v[0] === a && v[1] === b);
+      return;
+    }
+
+    const newIndex = validReads.findIndex((v) => v[0] === a && v[1] === b);
+
+    if (
+      newIndex > readIndex ||
+      (newIndex === 0 && readIndex === validReads.length - 1)
+    ) {
+      clockwise();
+      readIndex = newIndex;
+    } else if (
+      newIndex > readIndex ||
+      (newIndex === validReads.length - 1 && readIndex === 0)
+    ) {
+      counterClockwise();
+      readIndex = newIndex;
+    }
+  };
+
+  aLead.watch(() => doOldEncoder());
+  bLead.watch(() => doOldEncoder());
 
   return {
     tick: () => {},
