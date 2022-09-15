@@ -55,9 +55,15 @@ export const setupRotary = (changeVolume: (up: boolean) => void): ITick => {
 
   const bLead = new Gpio(PIN_B, "in", "both", { debounceTimeout: DEBOUNCE });
 
-  const doEncoder = () => {
-    const a = aLead.readSync();
-    const b = bLead.readSync();
+  const doEncoder = (readA: boolean) => {
+    let a = lastA;
+    let b = lastB;
+
+    if (readA) {
+      a = aLead.readSync();
+    } else {
+      b = bLead.readSync();
+    }
 
     // Do nothing if any channel is at its default value
     if (lastA == -1 || lastB == -1) {
