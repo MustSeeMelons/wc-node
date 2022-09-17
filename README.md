@@ -1,5 +1,7 @@
 # How to
 
+- `sudo apt-get update`
+- `sudo apt-get install pigpio`
 - `npm i`
 - `sudo apt-get install -y mpg123`
 - `sudo npm start`
@@ -9,12 +11,6 @@
 
 `gpio=22,27=pu`
 `gpio=4=pd`
-
-# Perhaps one day
-
-- Lock UI while waiting for response
-- Indicate if ICY meta is not provided
-- Show message if selected URL cannot be played for some reason
 
 # Systemd
 
