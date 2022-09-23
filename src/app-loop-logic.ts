@@ -1,9 +1,11 @@
 import { IAudioManager } from "./audio-manager";
 import { fadeInAudio, fadeOutAudio, setVolume } from "./audio-manager";
 import { IAudioStream, streamFactory } from "./stream";
-import { Gpio } from "onoff";
+import { Gpio, configureClock, CLOCK_PWM } from "pigpio";
 import { configManager } from "./config-manager";
 import { wait } from "./utils";
+
+configureClock(1, CLOCK_PWM);
 
 const PIN_LED = 5;
 
@@ -15,6 +17,7 @@ export interface IAppLogic {
   toggleAudio: () => void;
   setStreamDataCallback: (cb: (data: string) => void) => void;
   isPlaying: () => boolean;
+  setLedBrightness: () => void;
 }
 
 let streamDataCallback: (data: string) => void;
@@ -26,13 +29,18 @@ export const appLogicFactory = async (
     await setVolume(configManager.getMinVolume());
 
     let stream: IAudioStream | undefined;
-    const led = new Gpio(PIN_LED, "out");
+    const led = new Gpio(PIN_LED, { mode: Gpio.OUTPUT });
 
     let isLedOn = false;
-    led.writeSync(0);
+    led.pwmWrite(0);
 
     const setLedState = (value: boolean) => {
-      led.writeSync(value ? 1 : 0);
+      if (value) {
+        led.pwmWrite(configManager.getLedBrightness());
+      } else {
+        led.pwmWrite(0);
+      }
+
       isLedOn = value;
     };
 
@@ -77,6 +85,11 @@ export const appLogicFactory = async (
         streamDataCallback = cb;
       },
       isPlaying: () => isPlaying,
+      setLedBrightness: (value: number) => {
+        if (isLedOn) {
+          led.pwmWrite(value);
+        }
+      },
     };
   } catch (e) {
     console.error(e);

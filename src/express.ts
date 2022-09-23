@@ -40,6 +40,7 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
       const step = configManager.getVolStep();
       const isActive = configManager.isActive();
       const isSonarDisabled = configManager.isSonarDisabled();
+      const ledBrightness = configManager.getLedBrightness();
 
       res.render("index", {
         activeStreamId,
@@ -53,6 +54,7 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
         up,
         enableSonar: !isSonarDisabled ? "active" : "",
         disableSonar: isSonarDisabled ? "active" : "",
+        ledValue: ledBrightness,
       });
     };
 
@@ -148,6 +150,13 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
     res.sendStatus(200);
   });
 
+  app.post("/led", (req, res) => {
+    const val = req.body["value"];
+    configManager.setLedBrightness(val);
+    logic.setLedBrightness(val);
+    res.sendStatus(200);
+  });
+
   app.get("/reboot", (req, res) => {
     res.sendStatus(200);
     exec("systemctl restart ateja");
@@ -171,7 +180,7 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
   });
 
   httpServer.listen(PORT, () => {
-    console.log(`API is up on: ${PORT}..`);
+    console.log(`Started.. API is up on: ${PORT}..`);
   });
 
   // Passing callback for socket data events
