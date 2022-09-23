@@ -9,8 +9,8 @@ const volStepLabel = document.getElementById("volStepLabel");
 const playButton = document.getElementById("on");
 const pauseButton = document.getElementById("off");
 
-const sonarOnButton = document.getElementById("sonarOn");
-const sonarOffButton = document.getElementById("sonarOff");
+// const sonarOnButton = document.getElementById("sonarOn");
+// const sonarOffButton = document.getElementById("sonarOff");
 
 const notification = document.getElementById("notification");
 notification.onanimationend = () => {
@@ -22,13 +22,15 @@ notification.onanimationend = () => {
   );
 };
 
-const simpleHandler = (successMsg = "Done!") => (response) => {
-  if (response.status !== 200) {
-    showNotification("Something is a foot!", ["alert-danger"]);
-  } else {
-    showNotification(successMsg, ["alert-success"]);
-  }
-};
+const simpleHandler =
+  (successMsg = "Done!") =>
+  (response) => {
+    if (response.status !== 200) {
+      showNotification("Something is a foot!", ["alert-danger"]);
+    } else {
+      showNotification(successMsg, ["alert-success"]);
+    }
+  };
 
 const errHandler = (err) => {
   showNotification("Something is a foot!", ["alert-danger"]);
@@ -91,19 +93,19 @@ const toggleState = (value) => {
     .catch(errHandler);
 };
 
-const toggleSonar = (value) => {
-  fetch("sonar", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      value,
-    }),
-  })
-    .then(simpleHandler())
-    .catch(errHandler);
-};
+// const toggleSonar = (value) => {
+//   fetch("sonar", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({
+//       value,
+//     }),
+//   })
+//     .then(simpleHandler())
+//     .catch(errHandler);
+// };
 
 // Add pesky change listeners
 maxVol.addEventListener("change", (e) => {
@@ -133,13 +135,13 @@ pauseButton.addEventListener("click", () => {
   nowPlaying.innerText = "..silence..";
 });
 
-sonarOnButton.addEventListener("click", () => {
-  toggleSonar(false);
-});
+// sonarOnButton.addEventListener("click", () => {
+//   toggleSonar(false);
+// });
 
-sonarOffButton.addEventListener("click", () => {
-  toggleSonar(true);
-});
+// sonarOffButton.addEventListener("click", () => {
+//   toggleSonar(true);
+// });
 
 const notifConfig = {
   success: {
