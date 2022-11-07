@@ -109,9 +109,13 @@ export const appLogicFactory = async (
               toggleLed();
 
               setTimeout(() => performStep(), 200);
+            } else {
+              setLedState(true);
             }
           }
         };
+
+        performStep();
       },
     };
   } catch (e) {
