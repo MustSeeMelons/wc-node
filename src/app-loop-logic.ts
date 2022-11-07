@@ -17,7 +17,7 @@ export interface IAppLogic {
   toggleAudio: () => void;
   setStreamDataCallback: (cb: (data: string) => void) => void;
   isPlaying: () => boolean;
-  setLedBrightness: () => void;
+  setLedBrightness: (value: number) => void;
 }
 
 let streamDataCallback: (data: string) => void;
