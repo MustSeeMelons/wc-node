@@ -5,12 +5,15 @@ const volStep = document.getElementById("volStep");
 const maxVolLabel = document.getElementById("maxVolLabel");
 const minVolLabel = document.getElementById("minVolLabel");
 const volStepLabel = document.getElementById("volStepLabel");
+const ledLabel = document.getElementById("ledLabel");
 
 const playButton = document.getElementById("on");
 const pauseButton = document.getElementById("off");
 
-const sonarOnButton = document.getElementById("sonarOn");
-const sonarOffButton = document.getElementById("sonarOff");
+// const sonarOnButton = document.getElementById("sonarOn");
+// const sonarOffButton = document.getElementById("sonarOff");
+
+const led = document.getElementById("led");
 
 const notification = document.getElementById("notification");
 notification.onanimationend = () => {
@@ -22,13 +25,15 @@ notification.onanimationend = () => {
   );
 };
 
-const simpleHandler = (successMsg = "Done!") => (response) => {
-  if (response.status !== 200) {
-    showNotification("Something is a foot!", ["alert-danger"]);
-  } else {
-    showNotification(successMsg, ["alert-success"]);
-  }
-};
+const simpleHandler =
+  (successMsg = "Done!") =>
+  (response) => {
+    if (response.status !== 200) {
+      showNotification("Something is a foot!", ["alert-danger"]);
+    } else {
+      showNotification(successMsg, ["alert-success"]);
+    }
+  };
 
 const errHandler = (err) => {
   showNotification("Something is a foot!", ["alert-danger"]);
@@ -61,6 +66,7 @@ shutdownBtn.addEventListener("click", () => {
 maxVolLabel.innerText = `Max Volume: ${maxVol.value}`;
 minVolLabel.innerText = `Min Volume: ${minVol.value}`;
 volStepLabel.innerText = `Volume Step: ${volStep.value}`;
+ledLabel.innerText = `LED Brightness: ${led.value}`;
 
 const applyVolume = (type, value) => {
   fetch("volume", {
@@ -91,8 +97,22 @@ const toggleState = (value) => {
     .catch(errHandler);
 };
 
-const toggleSonar = (value) => {
-  fetch("sonar", {
+// const toggleSonar = (value) => {
+//   fetch("sonar", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({
+//       value,
+//     }),
+//   })
+//     .then(simpleHandler())
+//     .catch(errHandler);
+// };
+
+const setLedBrightness = (value) => {
+  fetch("led", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -124,6 +144,12 @@ volStep.addEventListener("change", (e) => {
   applyVolume("step", val);
 });
 
+led.addEventListener("change", (e) => {
+  const val = e.target.value;
+  ledLabel.innerText = `LED Brightness: ${val}`;
+  setLedBrightness(val);
+});
+
 playButton.addEventListener("click", () => {
   toggleState(true);
 });
@@ -133,13 +159,13 @@ pauseButton.addEventListener("click", () => {
   nowPlaying.innerText = "..silence..";
 });
 
-sonarOnButton.addEventListener("click", () => {
-  toggleSonar(false);
-});
+// sonarOnButton.addEventListener("click", () => {
+//   toggleSonar(false);
+// });
 
-sonarOffButton.addEventListener("click", () => {
-  toggleSonar(true);
-});
+// sonarOffButton.addEventListener("click", () => {
+//   toggleSonar(true);
+// });
 
 const notifConfig = {
   success: {

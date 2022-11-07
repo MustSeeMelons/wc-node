@@ -1,34 +1,28 @@
-import { ISonar } from "./sonar";
 import { IAudioManager } from "./audio-manager";
 import { fadeInAudio, fadeOutAudio, setVolume } from "./audio-manager";
 import { IAudioStream, streamFactory } from "./stream";
-import { Gpio } from "pigpio";
+import { Gpio, configureClock, CLOCK_PWM } from "pigpio";
 import { configManager } from "./config-manager";
-import { wait } from "./utils";
 
-const PIN_LED = 23;
-const TRIGGER_DIST = 50;
-const SAMPLE_COUNT = 2;
+configureClock(1, CLOCK_PWM);
 
-export enum SonarState {
-  OnTrigger = "OnTrigger",
-  OnTriggerEnd = "OnTriggerEnd",
-  OffTrigger = "OffTrigger",
-  OffTriggerEnd = "OffTriggerEnd",
-}
+const PIN_LED = 5;
+
+let isPlaying = false;
 
 export interface IAppLogic {
-  stateTick: () => Promise<void>;
-  getSonarState: () => SonarState;
   playAudio: () => Promise<void>;
   stopAudio: () => Promise<void>;
+  toggleAudio: () => void;
   setStreamDataCallback: (cb: (data: string) => void) => void;
+  isPlaying: () => boolean;
+  setLedBrightness: (value: number) => void;
+  performMaxVolumeShow: () => void;
 }
 
 let streamDataCallback: (data: string) => void;
 
 export const appLogicFactory = async (
-  sonar: ISonar,
   audio: IAudioManager
 ): Promise<IAppLogic | undefined> => {
   try {
@@ -38,33 +32,20 @@ export const appLogicFactory = async (
     const led = new Gpio(PIN_LED, { mode: Gpio.OUTPUT });
 
     let isLedOn = false;
-    led.digitalWrite(0);
-    let sonarState = SonarState.OnTrigger;
+    led.pwmWrite(0);
 
     const setLedState = (value: boolean) => {
-      led.digitalWrite(value ? 1 : 0);
+      if (value) {
+        led.pwmWrite(configManager.getLedBrightness());
+      } else {
+        led.pwmWrite(0);
+      }
+
       isLedOn = value;
     };
 
-    const median = (arr: number[]) => {
-      if (arr.length % 2 === 0) {
-        return arr[arr.length / 2];
-      } else if (arr.length === 1) {
-        return arr[0];
-      } else {
-        const lower = arr[Math.floor(arr.length / 2)];
-        const upper = arr[Math.ceil(arr.length / 2)];
-
-        return (lower + upper) / 2;
-      }
-    };
-
-    const filter = (arr: number[]) => {
-      arr.sort((a, b) => a - b);
-      return median(arr);
-    };
-
     const playAudio = async () => {
+      isPlaying = true;
       setLedState(true);
       if (stream) {
         stream.close();
@@ -79,72 +60,62 @@ export const appLogicFactory = async (
       });
 
       await fadeInAudio();
-
-      sonarState = SonarState.OffTrigger;
     };
 
     const stopAudio = async () => {
       setLedState(false);
+      isPlaying = false;
       await fadeOutAudio();
       stream && stream.close();
-
-      sonarState = SonarState.OnTrigger;
     };
 
-    const stateTick = async () => {
-      const samples = [];
-      for (let i = 0; i < SAMPLE_COUNT; i++) {
-        const dist = await sonar.getDistance();
-        if (dist > 0) {
-          samples.push(dist);
-        }
-        // From the sonar spec, 60ms between reads
-        await wait(60);
-      }
-
-      if (samples.length === 0) {
-        return;
-      }
-
-      const dist = filter(samples);
-
-      switch (sonarState) {
-        case SonarState.OnTrigger:
-          if (dist < TRIGGER_DIST) {
-            sonarState = SonarState.OnTriggerEnd;
-            configManager.setActive(true);
-            await playAudio();
-          }
-          break;
-        case SonarState.OnTriggerEnd:
-          if (dist > TRIGGER_DIST) {
-            sonarState = SonarState.OffTrigger;
-          }
-          break;
-        case SonarState.OffTrigger:
-          if (dist < TRIGGER_DIST) {
-            sonarState = SonarState.OffTriggerEnd;
-            configManager.setActive(false);
-            await stopAudio();
-          }
-          break;
-        case SonarState.OffTriggerEnd:
-          if (dist > TRIGGER_DIST) {
-            sonarState = SonarState.OnTrigger;
-          }
-          break;
+    const toggleAudio = () => {
+      if (isPlaying) {
+        stopAudio();
+      } else {
+        playAudio();
       }
     };
 
     return {
-      stateTick,
       playAudio,
       stopAudio,
-      getSonarState: () => {
-        return sonarState;
-      },
+      toggleAudio,
       setStreamDataCallback: (cb) => {
         streamDataCallback = cb;
+      },
+      isPlaying: () => isPlaying,
+      setLedBrightness: (value: number) => {
+        if (isLedOn) {
+          led.pwmWrite(value);
+        }
+      },
+      performMaxVolumeShow: () => {
+        let counter = 0;
+        const counterMax = 5;
+
+        const toggleLed = () => {
+          if (isLedOn) {
+            setLedState(false);
+          } else {
+            setLedState(true);
+          }
+        };
+
+        const performStep = () => {
+          if (isPlaying) {
+            if (counter < counterMax) {
+              counter++;
+              toggleLed();
+
+              setTimeout(() => performStep(), 200);
+            } else {
+              setLedState(true);
+            }
+          }
+        };
+
+        performStep();
       },
     };
   } catch (e) {

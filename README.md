@@ -1,19 +1,21 @@
 # How to
 
-- `npm i`
+- `sudo apt-get update`
 - `sudo apt-get install pigpio`
+- `npm i`
 - `sudo apt-get install -y mpg123`
 - `sudo npm start`
+- `/etc/systemd/system/ateja.service`
 
-# If Bored
+# Node
 
-- Override hardrware toggle button (ordered, on the way)
+- `use nvm to install node`
+- `sudo ln -s $(which node) /usr/bin/`
 
-# Perhaps one day
+# /boot/config.txt
 
-- Lock UI while waiting for response
-- Indicate if ICY meta is not provided
-- Show message if selected URL cannot be played for some reason
+`gpio=22,27=pu`
+`gpio=4=pd`
 
 # Systemd
 
