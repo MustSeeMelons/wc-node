@@ -3,7 +3,6 @@ import { fadeInAudio, fadeOutAudio, setVolume } from "./audio-manager";
 import { IAudioStream, streamFactory } from "./stream";
 import { Gpio, configureClock, CLOCK_PWM } from "pigpio";
 import { configManager } from "./config-manager";
-import { wait } from "./utils";
 
 configureClock(1, CLOCK_PWM);
 
@@ -18,6 +17,7 @@ export interface IAppLogic {
   setStreamDataCallback: (cb: (data: string) => void) => void;
   isPlaying: () => boolean;
   setLedBrightness: (value: number) => void;
+  performMaxVolumeShow: () => void;
 }
 
 let streamDataCallback: (data: string) => void;
@@ -89,6 +89,29 @@ export const appLogicFactory = async (
         if (isLedOn) {
           led.pwmWrite(value);
         }
+      },
+      performMaxVolumeShow: () => {
+        let counter = 0;
+        const counterMax = 5;
+
+        const toggleLed = () => {
+          if (isLedOn) {
+            setLedState(false);
+          } else {
+            setLedState(true);
+          }
+        };
+
+        const performStep = () => {
+          if (isPlaying) {
+            if (counter < counterMax) {
+              counter++;
+              toggleLed();
+
+              setTimeout(() => performStep(), 200);
+            }
+          }
+        };
       },
     };
   } catch (e) {

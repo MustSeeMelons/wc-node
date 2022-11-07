@@ -1,5 +1,4 @@
 import { appLogicFactory } from "./app-loop-logic";
-import { wait } from "./utils";
 import { startServer } from "./express";
 import { audioManagerFactory } from "./audio-manager";
 import { ITick } from "./ticks/tick";
@@ -11,6 +10,7 @@ import { setupRotary } from "./ticks/rotary";
     console.log("Starting..");
     const audio = await audioManagerFactory();
     const appLogic = await appLogicFactory(audio);
+    audio.setMaxVolumeCallback(appLogic.performMaxVolumeShow);
 
     const ticks: ITick[] = [
       setupPowerButton(appLogic.toggleAudio),
