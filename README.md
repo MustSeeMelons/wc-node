@@ -10,9 +10,19 @@
 # Node
 
 - `use nvm to install node`
-- `sudo ln -s $(which node) /usr/bin/`
+- `sudo ln -s $(which node) /usr/bin/node`
+- `sudo ln -s $(which npm) /usr/local/bin/npm`
+
+# A few commands to run
+
+`raspi-gpio set 4 pd`
+`raspi-gpio set 5 pu`
+`raspi-gpio set 22 pu`
+`raspi-gpio set 27 pu`
 
 # /boot/config.txt
+
+## These seemed to have stopped working on new install
 
 `gpio=22,27=pu`
 `gpio=4=pd`
