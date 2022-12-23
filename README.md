@@ -15,10 +15,12 @@
 
 # A few commands to run
 
-`raspi-gpio set 4 pd`
+`raspi-gpio set 4 pu`
 `raspi-gpio set 5 pu`
 `raspi-gpio set 22 pu`
 `raspi-gpio set 27 pu`
+
+https://raspberrypi-guide.github.io/programming/run-script-on-boot#editing-rclocal
 
 # /boot/config.txt
 
