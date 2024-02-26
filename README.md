@@ -1,3 +1,9 @@
+# The one and only WC internet radio
+
+Runs on a Pi Zero W through I2S.
+
+![image](wc.jpg)
+
 # How to
 
 - `sudo apt-get update`
