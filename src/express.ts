@@ -1,6 +1,5 @@
 import express, { Application, Request, Response } from "express";
 import path from "path";
-import { readdirSync } from "fs";
 import { configManager } from "./config-manager";
 import { IAudioManager } from "./audio-manager";
 import { IAppLogic } from "./app-loop-logic";
@@ -32,32 +31,32 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
 
   app.use("/public", express.static(path.join(__dirname, "/resources/public")));
 
-  const postHandler = (success: string) => async (
-    req: Request,
-    res: Response
-  ) => {
-    const activeStreamId = configManager.getActiveStreamId();
-    const streams = configManager.getStreamUrls();
-    const min = configManager.getMinVolume();
-    const max = configManager.getMaxVolume();
-    const step = configManager.getVolStep();
-    const isActive = configManager.isActive();
-    const isSonarDisabled = configManager.isSonarDisabled();
+  const postHandler =
+    (success: string) => async (req: Request, res: Response) => {
+      const activeStreamId = configManager.getActiveStreamId();
+      const streams = configManager.getStreamUrls();
+      const min = configManager.getMinVolume();
+      const max = configManager.getMaxVolume();
+      const step = configManager.getVolStep();
+      const isActive = configManager.isActive();
+      const isSonarDisabled = configManager.isSonarDisabled();
+      const ledBrightness = configManager.getLedBrightness();
 
-    res.render("index", {
-      activeStreamId,
-      streams,
-      success: success,
-      min,
-      max,
-      step,
-      on: isActive ? "active" : "",
-      off: !isActive ? "active" : "",
-      up,
-      enableSonar: !isSonarDisabled ? "active" : "",
-      disableSonar: isSonarDisabled ? "active" : "",
-    });
-  };
+      res.render("index", {
+        activeStreamId,
+        streams,
+        success: success,
+        min,
+        max,
+        step,
+        on: isActive ? "active" : "",
+        off: !isActive ? "active" : "",
+        up,
+        enableSonar: !isSonarDisabled ? "active" : "",
+        disableSonar: isSonarDisabled ? "active" : "",
+        ledValue: ledBrightness,
+      });
+    };
 
   app.get("/", postHandler(""));
   app.get("/success", postHandler("true"));
@@ -133,7 +132,7 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
 
   app.post("/state", (req, res) => {
     const value = !!req.body["value"];
-    
+
     configManager.setActive(value);
 
     if (value) {
@@ -148,6 +147,13 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
   app.post("/sonar", (req, res) => {
     const value = !!req.body["value"];
     configManager.setSonarDisabled(value);
+    res.sendStatus(200);
+  });
+
+  app.post("/led", (req, res) => {
+    const val = req.body["value"];
+    configManager.setLedBrightness(val);
+    logic.setLedBrightness(val);
     res.sendStatus(200);
   });
 
@@ -174,7 +180,7 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
   });
 
   httpServer.listen(PORT, () => {
-    console.log(`API is up on: ${PORT}..`);
+    console.log(`Started.. API is up on: ${PORT}..`);
   });
 
   // Passing callback for socket data events

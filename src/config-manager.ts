@@ -16,6 +16,7 @@ interface IConfig {
   volStep: number;
   isActive: boolean;
   isSonarDisabled: boolean;
+  ledBrightness: number;
 }
 
 interface IConfigManager {
@@ -34,6 +35,8 @@ interface IConfigManager {
   setActive: (value: boolean) => void;
   isSonarDisabled: () => boolean;
   setSonarDisabled: (value: boolean) => void;
+  getLedBrightness: () => number;
+  setLedBrightness: (value: number) => void;
 }
 
 const configPath = path.join(__dirname, "/resources/config.json");
@@ -111,6 +114,13 @@ export const configManager: IConfigManager = {
   },
   setSonarDisabled: (value: boolean) => {
     parsed.isSonarDisabled = value;
+    saveConfig();
+  },
+  getLedBrightness: () => {
+    return parsed.ledBrightness;
+  },
+  setLedBrightness: (value: number) => {
+    parsed.ledBrightness = value;
     saveConfig();
   },
 };
