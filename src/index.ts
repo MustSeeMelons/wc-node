@@ -3,29 +3,21 @@ import { startServer } from "./express";
 import { audioManagerFactory } from "./audio-manager";
 import { ITick } from "./ticks/tick";
 import { setupPowerButton } from "./ticks/power";
-import { setupRotary } from "./ticks/rotary";
+import { setupShutdownButton } from "./ticks/shutdown";
+import { configManager } from "./config-manager";
 
 (async () => {
   try {
     console.log("Starting..");
-    const audio = await audioManagerFactory();
-    const appLogic = await appLogicFactory(audio);
-    audio.setMaxVolumeCallback(appLogic.performMaxVolumeShow);
+    const audioManager = await audioManagerFactory();
+    const appLogic = await appLogicFactory(audioManager);
 
     const ticks: ITick[] = [
       setupPowerButton(appLogic.toggleAudio),
-      setupRotary((up) => {
-        if (appLogic.isPlaying()) {
-          if (up) {
-            audio.increaseVolume();
-          } else {
-            audio.decreaseVolume();
-          }
-        }
-      }),
+      setupShutdownButton(),
     ];
 
-    startServer(audio, appLogic);
+    startServer(audioManager, appLogic);
 
     ticks.forEach((t) => t.tick());
   } catch (e) {

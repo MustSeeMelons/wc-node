@@ -1,12 +1,11 @@
 import { IAudioManager } from "./audio-manager";
 import { fadeInAudio, fadeOutAudio, setVolume } from "./audio-manager";
 import { IAudioStream, streamFactory } from "./stream";
-import { Gpio, configureClock, CLOCK_PWM } from "pigpio";
+import { Gpio, configureClock, CLOCK_PWM, terminate } from "pigpio";
 import { configManager } from "./config-manager";
+import { setLedState, getLedState, setLedBrightness } from "./led";
 
 configureClock(1, CLOCK_PWM);
-
-const PIN_LED = 5;
 
 let isPlaying = false;
 
@@ -17,7 +16,6 @@ export interface IAppLogic {
   setStreamDataCallback: (cb: (data: string) => void) => void;
   isPlaying: () => boolean;
   setLedBrightness: (value: number) => void;
-  performMaxVolumeShow: () => void;
 }
 
 let streamDataCallback: (data: string) => void;
@@ -29,20 +27,6 @@ export const appLogicFactory = async (
     await setVolume(configManager.getMinVolume());
 
     let stream: IAudioStream | undefined;
-    const led = new Gpio(PIN_LED, { mode: Gpio.OUTPUT });
-
-    let isLedOn = false;
-    led.pwmWrite(0);
-
-    const setLedState = (value: boolean) => {
-      if (value) {
-        led.pwmWrite(configManager.getLedBrightness());
-      } else {
-        led.pwmWrite(0);
-      }
-
-      isLedOn = value;
-    };
 
     const playAudio = async () => {
       isPlaying = true;
@@ -60,6 +44,8 @@ export const appLogicFactory = async (
       });
 
       await fadeInAudio();
+
+      // audio.setMaxVolume();
     };
 
     const stopAudio = async () => {
@@ -86,36 +72,9 @@ export const appLogicFactory = async (
       },
       isPlaying: () => isPlaying,
       setLedBrightness: (value: number) => {
-        if (isLedOn) {
-          led.pwmWrite(value);
+        if (getLedState()) {
+          setLedBrightness(value);
         }
-      },
-      performMaxVolumeShow: () => {
-        let counter = 0;
-        const counterMax = 5;
-
-        const toggleLed = () => {
-          if (isLedOn) {
-            setLedState(false);
-          } else {
-            setLedState(true);
-          }
-        };
-
-        const performStep = () => {
-          if (isPlaying) {
-            if (counter < counterMax) {
-              counter++;
-              toggleLed();
-
-              setTimeout(() => performStep(), 200);
-            } else {
-              setLedState(true);
-            }
-          }
-        };
-
-        performStep();
       },
     };
   } catch (e) {
@@ -123,3 +82,8 @@ export const appLogicFactory = async (
     return undefined;
   }
 };
+
+process.on("SIGINT", function () {
+  terminate();
+  process.exit();
+});

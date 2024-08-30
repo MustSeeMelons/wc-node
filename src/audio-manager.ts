@@ -6,13 +6,12 @@ const VOL_WAIT = 125;
 const VOL_CHANGE_AMOUNT = 3;
 
 let currVolume = configManager.getMaxVolume();
-let maxVolumeCallback;
 
 export interface IAudioManager {
   setVolume: (volume: number) => void;
   increaseVolume: () => void;
   decreaseVolume: () => void;
-  setMaxVolumeCallback: (callback) => void;
+  setMaxVolume: () => void;
 }
 
 export const setVolume = (volume: number) => {
@@ -49,9 +48,17 @@ export const fadeOutAudio = async () => {
   }
 };
 
+/**
+ * Functions for controlling volume. Not really necesary anymore because main
+ * volume control is now physical.
+ * @returns
+ */
 export const audioManagerFactory = async (): Promise<IAudioManager> => {
   try {
     return {
+      setMaxVolume: () => {
+        setVolume(configManager.getMaxVolume());
+      },
       setVolume: (volume: number) => {
         setVolume(volume);
       },
@@ -60,7 +67,6 @@ export const audioManagerFactory = async (): Promise<IAudioManager> => {
 
         if (currVolume > 100) {
           currVolume = 100;
-          maxVolumeCallback && maxVolumeCallback();
         }
 
         configManager.setMaxVolume(currVolume);
@@ -77,9 +83,6 @@ export const audioManagerFactory = async (): Promise<IAudioManager> => {
         configManager.setMaxVolume(currVolume);
 
         setVolume(currVolume);
-      },
-      setMaxVolumeCallback: (callback) => {
-        maxVolumeCallback = callback;
       },
     };
   } catch (e) {

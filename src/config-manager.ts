@@ -17,6 +17,7 @@ interface IConfig {
   isActive: boolean;
   isSonarDisabled: boolean;
   ledBrightness: number;
+  isLedIgnore: boolean;
 }
 
 interface IConfigManager {
@@ -37,6 +38,8 @@ interface IConfigManager {
   setSonarDisabled: (value: boolean) => void;
   getLedBrightness: () => number;
   setLedBrightness: (value: number) => void;
+  setLedIgnore: (value: boolean) => void;
+  getLedIgnore: () => boolean;
 }
 
 const configPath = path.join(__dirname, "/resources/config.json");
@@ -122,5 +125,12 @@ export const configManager: IConfigManager = {
   setLedBrightness: (value: number) => {
     parsed.ledBrightness = value;
     saveConfig();
+  },
+  setLedIgnore: (value: boolean) => {
+    parsed.isLedIgnore = value;
+    saveConfig();
+  },
+  getLedIgnore: () => {
+    return parsed.isLedIgnore;
   },
 };
