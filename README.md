@@ -4,6 +4,14 @@ Runs on a Pi Zero W through I2S.
 
 ![image](wc.jpg)
 
+# TODO
+
+- Use switch to start audio (GPIO20)
+- Button to shut down (GPIO4)
+- Pi on LED (GPIO23), turn off on shutdown
+- Use LED to show audio play state?
+- Move streaming to js?
+
 # How to
 
 - `sudo apt-get update`
@@ -21,6 +29,7 @@ Runs on a Pi Zero W through I2S.
 
 # A few commands to run
 
+// TODO update these!
 `raspi-gpio set 4 pu`
 `raspi-gpio set 5 pu`
 `raspi-gpio set 22 pu`
@@ -31,6 +40,8 @@ https://raspberrypi-guide.github.io/programming/run-script-on-boot#editing-rcloc
 # /boot/config.txt
 
 ## These seemed to have stopped working on new install
+
+// TODO update these!
 
 `gpio=22,27=pu`
 `gpio=4=pd`
