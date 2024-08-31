@@ -40,7 +40,6 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
       const step = configManager.getVolStep();
       const isActive = configManager.isActive();
       const isSonarDisabled = configManager.isSonarDisabled();
-      const ledBrightness = configManager.getLedBrightness();
 
       res.render("index", {
         activeStreamId,
@@ -54,7 +53,6 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
         up,
         enableSonar: !isSonarDisabled ? "active" : "",
         disableSonar: isSonarDisabled ? "active" : "",
-        ledValue: ledBrightness,
       });
     };
 
@@ -147,13 +145,6 @@ export const startServer = (audio: IAudioManager, logic: IAppLogic) => {
   app.post("/sonar", (req, res) => {
     const value = !!req.body["value"];
     configManager.setSonarDisabled(value);
-    res.sendStatus(200);
-  });
-
-  app.post("/led", (req, res) => {
-    const val = req.body["value"];
-    configManager.setLedBrightness(val);
-    logic.setLedBrightness(val);
     res.sendStatus(200);
   });
 

@@ -1,14 +1,15 @@
-import { Gpio } from "pigpio";
 import { configManager } from "./config-manager";
+import { Gpio } from "onoff";
 
 const PIN_LED = 23;
 
-const led = new Gpio(PIN_LED, { mode: Gpio.OUTPUT });
+// Used to have pigpio with pwm, but it now interferes with audio playback, so onoff it is
+const led = new Gpio(PIN_LED, "out");
 let isLedOn = false;
 
 // Write low just in case
 if (!configManager.getLedIgnore()) {
-  led.pwmWrite(0);
+  led.writeSync(0);
 }
 
 export const setLedState = (value: boolean) => {
@@ -17,16 +18,12 @@ export const setLedState = (value: boolean) => {
   }
 
   if (value) {
-    led.pwmWrite(configManager.getLedBrightness());
+    led.writeSync(1);
   } else {
-    led.pwmWrite(0);
+    led.writeSync(0);
   }
 
   isLedOn = value;
-};
-
-export const setLedBrightness = (value: number) => {
-  led.pwmWrite(value);
 };
 
 export const getLedState = () => {

@@ -19,14 +19,10 @@ Runs on a Pi Zero W through I2S.
 - `sudo ln -s $(which node) /usr/bin/node`
 - `sudo ln -s $(which npm) /usr/local/bin/npm`
 
-# A few commands to run
+# A few commands to add to /boot/config.txt
 
 `raspi-gpio set 20 pu`
 `raspi-gpio set 4 pu`
-
-https://raspberrypi-guide.github.io/programming/run-script-on-boot#editing-rclocal
-
-# /boot/config.txt
 
 # Systemd
 

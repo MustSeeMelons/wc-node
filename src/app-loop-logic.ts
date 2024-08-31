@@ -1,11 +1,9 @@
 import { IAudioManager } from "./audio-manager";
 import { fadeInAudio, fadeOutAudio, setVolume } from "./audio-manager";
 import { IAudioStream, streamFactory } from "./stream";
-import { Gpio, configureClock, CLOCK_PWM, terminate } from "pigpio";
+import { terminate } from "pigpio";
 import { configManager } from "./config-manager";
-import { setLedState, getLedState, setLedBrightness } from "./led";
-
-configureClock(1, CLOCK_PWM);
+import { setLedState, getLedState } from "./led";
 
 let isPlaying = false;
 
@@ -15,10 +13,10 @@ export interface IAppLogic {
   toggleAudio: () => void;
   setStreamDataCallback: (cb: (data: string) => void) => void;
   isPlaying: () => boolean;
-  setLedBrightness: (value: number) => void;
 }
 
 let streamDataCallback: (data: string) => void;
+let stream: IAudioStream | undefined;
 
 export const appLogicFactory = async (
   audio: IAudioManager
@@ -43,9 +41,7 @@ export const appLogicFactory = async (
         setTimeout(() => resolve(), 1500);
       });
 
-      await fadeInAudio();
-
-      // audio.setMaxVolume();
+      audio.setMaxVolume();
     };
 
     const stopAudio = async () => {
@@ -71,11 +67,6 @@ export const appLogicFactory = async (
         streamDataCallback = cb;
       },
       isPlaying: () => isPlaying,
-      setLedBrightness: (value: number) => {
-        if (getLedState()) {
-          setLedBrightness(value);
-        }
-      },
     };
   } catch (e) {
     console.error(e);
@@ -84,6 +75,10 @@ export const appLogicFactory = async (
 };
 
 process.on("SIGINT", function () {
+  if (stream) {
+    stream.close();
+  }
+
   terminate();
   process.exit();
 });
