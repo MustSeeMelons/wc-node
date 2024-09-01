@@ -5,7 +5,6 @@ const volStep = document.getElementById("volStep");
 const maxVolLabel = document.getElementById("maxVolLabel");
 const minVolLabel = document.getElementById("minVolLabel");
 const volStepLabel = document.getElementById("volStepLabel");
-const ledLabel = document.getElementById("ledLabel");
 
 const playButton = document.getElementById("on");
 const pauseButton = document.getElementById("off");
@@ -61,7 +60,6 @@ shutdownBtn.addEventListener("click", () => {
 maxVolLabel.innerText = `Max Volume: ${maxVol.value}`;
 minVolLabel.innerText = `Min Volume: ${minVol.value}`;
 volStepLabel.innerText = `Volume Step: ${volStep.value}`;
-ledLabel.innerText = `LED Brightness: ${led.value}`;
 
 const applyVolume = (type, value) => {
   fetch("volume", {
@@ -195,6 +193,9 @@ deleteStream.addEventListener("click", () => {
       id: streamSelect.value,
     }),
   })
-    .then(simpleHandler())
+    .then(() => {
+      simpleHandler();
+      reload();
+    })
     .catch(errHandler);
 });
