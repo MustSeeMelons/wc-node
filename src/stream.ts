@@ -18,8 +18,9 @@ export const streamFactory = (cb: (data: string) => void) => {
     .getStreamUrls()
     .find((stream) => stream.id === id);
 
-  // Return nothing we we have nothing
+  // Return nothing when we have nothing
   if (!stream) {
+    console.log(`Nothing to play: ${id}`);
     return;
   }
 

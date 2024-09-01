@@ -8,7 +8,7 @@ import { configManager } from "./config-manager";
 
 (async () => {
   try {
-    console.log("Starting..");
+    console.log("Starting..\n");
     const audioManager = await audioManagerFactory();
     const appLogic = await appLogicFactory(audioManager);
 
