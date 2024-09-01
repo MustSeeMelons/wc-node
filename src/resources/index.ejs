@@ -1,178 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta name="theme-color" content="#ffffff" />
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="public/favicon.ico">
-    <link rel="stylesheet" href="public/styles.css" />
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
-      crossorigin="anonymous"
-    />
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
-    <title>Ateja FM</title>
-  </head>
-  <body>
-    <div class="row justify-content-center m-3">
-      <div id="bg" class="background">
-        <div id="bb-msg" class="bb-msg">
-          Some text
-        </div>
-      </div>
-      <div class="col-xs-10 col-sm-6">
-        <div class="row">
-          <h2 class="m-0">Ateja FM</h2><button id="reboot" type="button" class="btn btn-info ml-2">Reboot</button><button id="shutdown" type="button" class="btn btn-danger ml-2">Shutdown</button>
-        </div>
-        <small class="form-text text-muted"><%= up %></small>
-        <div class="btn-group btn-group-toggle col-12 p-3" data-toggle="buttons">
-          <label class="btn btn-primary <%= on %>">
-            <input 
-              type="radio" 
-              name="options" 
-              id="on" 
-              autocomplete="off"
-              <% if(on !== "") {%>
-                checked
-              <% } %>  
-              >Play Audio
-          </label>
-          <label class="btn btn-primary <%= off %>">
-            <input 
-              type="radio"
-              name="options" 
-              id="off" 
-              autocomplete="off"
-              <% if(off !== "") {%>
-                checked
-              <% } %> 
-            >Stop Audio
-          </label>
-        </div>
-        <small id ="playing" class="form-text text-center">..silence..</small>
-        <!-- <div class="btn-group btn-group-toggle col-12 p-3" data-toggle="buttons">
-          <label class="btn btn-primary <%= enableSonar %>">
-            <input 
-              type="radio" 
-              name="options" 
-              id="sonarOn" 
-              autocomplete="off"
-              <% if(enableSonar !== "") {%>
-                checked
-              <% } %>  
-              >Enable Sonar
-          </label>
-          <label class="btn btn-primary <%= disableSonar %>">
-            <input 
-              type="radio"
-              name="options" 
-              id="sonarOff" 
-              autocomplete="off"
-              <% if(disableSonar !== "") {%>
-                checked
-              <% } %> 
-            >Disable Sonar
-          </label>
-        </div> -->
-        <div id="notification" class="alert notification" role="alert">Updated!</div>
-        <form id="addStreamForm" method="POST" action="add" onsubmit="return onAddStream();">
-          <div class="form-group">
-              <label for="selectedStream">Active Stream</label>
-              <select class="form-control" id="activeStream">
-                <% for(var i=0; i < streams.length; i++) { %>
-                  <option 
-                    value=<%= streams[i].id %>
-                    <% if(activeStreamId === streams[i].id) { %>
-                      selected
-                    <% } %>
-                    >
-                    <%= streams[i].name %>
-                  </option>
-                <% } %>  
-              </select>
-              <button id="deleteStream" type="submit" class="btn btn-danger btn-block mt-4">Delete</button>
-          </div>
-          <div class="form-group">
-            <div class="row">
-              <div class="col">
-                <label for="streamUrl">Name</label>
-                <input
-                  name="name"
-                  value=""
-                  type="text"
-                  class="form-control"
-                  id="streamName"
-                  placeholder="some stream"
-                />
-              </div>
-              <div class="col">
-                <label for="streamUrl">Stream URL</label>
-                <input
-                  name="url"
-                  value=""
-                  type="text"
-                  class="form-control"
-                  id="streamUrl"
-                  placeholder="https://some-stream"
-                />
-              </div>
-            </div>
-            <button id="addStream" type="submit" class="btn btn-primary btn-block mt-4">Add</button>
-          </div>
-          <div class="form-group">
-            <label for="maxVol" id="maxVolLabel">Max Volume</label>
-            <input 
-              type="range" 
-              class="form-control-range" 
-              id="maxVol" 
-              min="0"
-              max="100"
-              step="1"
-              value="<%= max %>">
-              <small class="form-text text-muted">Sets current volume as well.</small>
-          </div>
-          <div class="form-group">
-            <label for="minVol" id="minVolLabel">Min Volume</label>
-            <input 
-              type="range"
-              class="form-control-range" 
-              id="minVol" 
-              min="0" 
-              max="100" 
-              step="1"
-              value="<%= min %>">
-          </div>
-          <div class="form-group">
-            <label for="volStep" id="volStepLabel">Volume Step</label>
-            <input 
-              type="range" 
-              class="form-control-range" 
-              id="volStep" 
-              min="1" 
-              max="20" 
-              step="1"
-              value="<%= step %>">
-          </div>
-          <div class="form-group">
-            <label for="volStep" id="ledLabel">LED Brightness</label>
-            <input 
-              type="range" 
-              class="form-control-range" 
-              id="led" 
-              min="1" 
-              max="255" 
-              step="1"
-              value="<%= ledValue %>">
-          </div>
-        </form>
+
+<head>
+  <meta name="theme-color" content="#ffffff" />
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="public/favicon.ico">
+  <link rel="stylesheet" href="public/styles.css" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous" />
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
+    integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
+    crossorigin="anonymous"></script>
+  <title>Ateja FM</title>
+</head>
+
+<body>
+  <div class="row justify-content-center m-3">
+    <div id="bg" class="background">
+      <div id="bb-msg" class="bb-msg">
+        Some text
       </div>
     </div>
-  </body>
-  <script type="text/javascript" src="public/script.js"></script>
+    <div class="col-xs-10 col-sm-6">
+      <div class="row">
+        <h2 class="m-0">Ateja FM</h2><button id="reboot" type="button" class="btn btn-info ml-2">Reboot</button><button
+          id="shutdown" type="button" class="btn btn-danger ml-2">Shutdown</button>
+      </div>
+      <small class="form-text text-muted">
+        <%= up %>
+      </small>
+      <div class="btn-group btn-group-toggle col-12 p-3" data-toggle="buttons">
+        <label class="btn btn-primary <%= on %>">
+          <input type="radio" name="options" id="on" autocomplete="off" <% if(on !=="" ) {%>
+          checked
+          <% } %>
+            >Play Audio
+        </label>
+        <label class="btn btn-primary <%= off %>">
+          <input type="radio" name="options" id="off" autocomplete="off" <% if(off !=="" ) {%>
+          checked
+          <% } %>
+            >Stop Audio
+        </label>
+      </div>
+      <small id="playing" class="form-text text-center">..silence..</small>
+      <div id="notification" class="alert notification" role="alert">Updated!</div>
+      <form id="addStreamForm" method="POST" action="add" onsubmit="return onAddStream();">
+        <div class="form-group">
+          <label for="selectedStream">Active Stream</label>
+          <select class="form-control" id="activeStream">
+            <% for(var i=0; i < streams.length; i++) { %>
+              <option value=<%=streams[i].id %>
+                <% if(activeStreamId===streams[i].id) { %>
+                  selected
+                  <% } %>
+                    >
+                    <%= streams[i].name %>
+              </option>
+              <% } %>
+          </select>
+          <button id="deleteStream" type="submit" class="btn btn-danger btn-block mt-4">Delete</button>
+        </div>
+        <div class="form-group">
+          <div class="row">
+            <div class="col">
+              <label for="streamUrl">Name</label>
+              <input name="name" value="" type="text" class="form-control" id="streamName" placeholder="some stream" />
+            </div>
+            <div class="col">
+              <label for="streamUrl">Stream URL</label>
+              <input name="url" value="" type="text" class="form-control" id="streamUrl"
+                placeholder="https://some-stream" />
+            </div>
+          </div>
+          <button id="addStream" type="submit" class="btn btn-primary btn-block mt-4">Add</button>
+        </div>
+        <div class="form-group">
+          <label for="maxVol" id="maxVolLabel">Max Volume</label>
+          <input type="range" class="form-control-range" id="maxVol" min="0" max="100" step="1" value="<%= max %>">
+          <small class="form-text text-muted">Sets current volume as well.</small>
+        </div>
+        <div class="form-group">
+          <label for="minVol" id="minVolLabel">Min Volume</label>
+          <input type="range" class="form-control-range" id="minVol" min="0" max="100" step="1" value="<%= min %>">
+        </div>
+        <div class="form-group">
+          <label for="volStep" id="volStepLabel">Volume Step</label>
+          <input type="range" class="form-control-range" id="volStep" min="1" max="20" step="1" value="<%= step %>">
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+<script type="text/javascript" src="public/script.js"></script>
+
 </html>

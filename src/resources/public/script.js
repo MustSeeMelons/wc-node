@@ -10,11 +10,6 @@ const ledLabel = document.getElementById("ledLabel");
 const playButton = document.getElementById("on");
 const pauseButton = document.getElementById("off");
 
-// const sonarOnButton = document.getElementById("sonarOn");
-// const sonarOffButton = document.getElementById("sonarOff");
-
-const led = document.getElementById("led");
-
 const notification = document.getElementById("notification");
 notification.onanimationend = () => {
   notification.classList.remove(
@@ -97,34 +92,6 @@ const toggleState = (value) => {
     .catch(errHandler);
 };
 
-// const toggleSonar = (value) => {
-//   fetch("sonar", {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify({
-//       value,
-//     }),
-//   })
-//     .then(simpleHandler())
-//     .catch(errHandler);
-// };
-
-const setLedBrightness = (value) => {
-  fetch("led", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      value,
-    }),
-  })
-    .then(simpleHandler())
-    .catch(errHandler);
-};
-
 // Add pesky change listeners
 maxVol.addEventListener("change", (e) => {
   const val = e.target.value;
@@ -144,12 +111,6 @@ volStep.addEventListener("change", (e) => {
   applyVolume("step", val);
 });
 
-led.addEventListener("change", (e) => {
-  const val = e.target.value;
-  ledLabel.innerText = `LED Brightness: ${val}`;
-  setLedBrightness(val);
-});
-
 playButton.addEventListener("click", () => {
   toggleState(true);
 });
@@ -158,14 +119,6 @@ pauseButton.addEventListener("click", () => {
   toggleState(false);
   nowPlaying.innerText = "..silence..";
 });
-
-// sonarOnButton.addEventListener("click", () => {
-//   toggleSonar(false);
-// });
-
-// sonarOffButton.addEventListener("click", () => {
-//   toggleSonar(true);
-// });
 
 const notifConfig = {
   success: {
